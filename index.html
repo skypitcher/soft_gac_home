@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SoftGAC: Generative Actor-Critic with Soft Bridge Policies</title>
+    <meta
+      name="description"
+      content="SoftGAC (Generative Actor-Critic with Soft Bridge Policies) asks whether a reinforcement-learning actor can be expressive, soft, cheap, and still outperform high-NFE generative policies."
+    >
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%231261a0' stroke-width='5'/%3E%3Cpath d='M16 5a11 11 0 0 1 11 11' fill='none' stroke='%23c77419' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M27 16a11 11 0 0 1-11 11' fill='none' stroke='%230f766e' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E"
+    >
+    <link rel="stylesheet" href="styles.css?v=20260606d">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]],
+          processEscapes: true
+        },
+        svg: {
+          fontCache: "global"
+        }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="SoftGAC home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>SoftGAC</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#rollouts">Rollouts</a>
+        <a href="#trilemma">Trilemma</a>
+        <a href="#method">Method</a>
+        <a href="#cost">Cost</a>
+        <a href="#evidence">Evidence</a>
+        <a href="#paper">Paper</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <canvas id="bridge-canvas" aria-hidden="true"></canvas>
+        <div class="hero-inner">
+          <p class="eyebrow">SoftGAC: Generative Actor-Critic with Soft Bridge Policies</p>
+          <h1>
+            Can an RL actor be
+            <span class="hero-word expressive-word">expressive</span>,
+            <span class="hero-word soft-word">soft</span>,
+            <span class="hero-word cheap-word">cheap</span>, and
+            <span class="hero-word better-word">better</span>?
+          </h1>
+          <p class="hero-copy">
+            SoftGAC keeps the multimodal power of latent generative policies, replaces endpoint entropy estimates
+            with analytical path-wise soft regularization, and uses a single stochastic forward pass to keep action generation
+            cheap while aiming for higher returns, not just faster inference.
+          </p>
+          <div class="hero-actions" aria-label="Paper links">
+            <a class="button primary" href="assets/2605.08733v1.pdf">Paper PDF</a>
+            <a class="button secondary" href="https://arxiv.org/abs/2605.08733">arXiv</a>
+            <a class="button secondary" href="https://github.com/skypitcher/soft_gac_jax">Code</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-strip" aria-label="Main takeaways">
+        <div>
+          <strong>Expressive actor</strong>
+          <span>multimodal stochastic bridge policy</span>
+        </div>
+        <div>
+          <strong>Principled softness</strong>
+          <span>exact path KL as control energy</span>
+        </div>
+        <div>
+          <strong>Cheap by design</strong>
+          <span>comparable params, one sampled call</span>
+        </div>
+        <div>
+          <strong>Hard-task gains</strong>
+          <span>stronger returns where high-NFE actors struggle</span>
+        </div>
+      </section>
+
+      <section id="rollouts" class="section rollouts-section" aria-label="SoftGAC rollout videos">
+        <div class="rollout-grid">
+          <figure class="rollout-card reveal">
+            <video autoplay muted loop playsinline controls preload="metadata" aria-label="SoftGAC Humanoid Run rollout">
+              <source src="assets/videos/humanoid-run.mp4" type="video/mp4">
+            </video>
+            <figcaption>Humanoid Run</figcaption>
+          </figure>
+
+          <figure class="rollout-card reveal">
+            <video autoplay muted loop playsinline controls preload="metadata" aria-label="SoftGAC Dog Run rollout">
+              <source src="assets/videos/dog-run.mp4" type="video/mp4">
+            </video>
+            <figcaption>Dog Run</figcaption>
+          </figure>
+
+          <figure class="rollout-card reveal">
+            <video autoplay muted loop playsinline controls preload="metadata" aria-label="SoftGAC H1 Hurdle rollout">
+              <source src="assets/videos/h1-hurdle.mp4" type="video/mp4">
+            </video>
+            <figcaption>H1 Hurdle</figcaption>
+          </figure>
+
+          <figure class="rollout-card reveal">
+            <video autoplay muted loop playsinline controls preload="metadata" aria-label="SoftGAC H1 Run rollout">
+              <source src="assets/videos/h1-run.mp4" type="video/mp4">
+            </video>
+            <figcaption>H1 Run</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="trilemma" class="section intro-section">
+        <div class="section-kicker">
+          <span class="axis-badge axis-all">Expressive · Soft · Cheap · Better</span>
+          The question
+        </div>
+        <div class="two-column">
+          <div>
+            <h2>The old bargain is too cramped.</h2>
+          </div>
+          <div class="lead-stack">
+            <p>
+              Diffusion, score, and flow policies are attractive because their action distributions can be
+              multimodal and highly non-Gaussian. That expressiveness is exactly what a diagonal Gaussian actor
+              struggles to provide in contact-rich, high-dimensional control.
+            </p>
+            <p>
+              But MaxEnt RL also wants a real soft objective, and online actor-critic wants action generation to
+              stay cheap during both environment interaction and policy updates. Existing generative actors often
+              give up one demand in this bargain: softness becomes a bound, estimator, or proxy; cheapness becomes
+              inference-only; or performance drops when the sampler is shortened.
+            </p>
+          </div>
+        </div>
+
+        <div class="trilemma-grid">
+          <article class="tile expressive">
+            <span class="tile-label">Expressive</span>
+            <h3>Rich action laws</h3>
+            <p>Latent generation can model multi-peak, non-Gaussian policies that unimodal Gaussian actors miss.</p>
+          </article>
+          <article class="tile soft">
+            <span class="tile-label">Soft</span>
+            <h3>Principled MaxEnt</h3>
+            <p>Softness should be optimized as a tractable density-based regularizer, not as a loose surrogate.</p>
+          </article>
+          <article class="tile cheap">
+            <span class="tile-label">Cheap</span>
+            <h3>Low training and inference cost</h3>
+            <p>High NFE samplers pay in deployment latency, BPTT depth, activation memory, and actor-update time.</p>
+          </article>
+          <article class="tile better">
+            <span class="tile-label">Better</span>
+            <h3>Higher returns at lower cost</h3>
+            <p>The goal is not to merely match high-NFE generative actors, but to outperform them with far fewer evaluations.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section contrast-section">
+        <div class="section-kicker">
+          <span class="axis-badge axis-tradeoff">Expressive vs Soft vs Cheap</span>
+          What breaks
+        </div>
+        <div class="contrast-list">
+          <article>
+            <h2>Endpoint density is the wrong place to get stuck.</h2>
+            <p>
+              A generative actor may be easy to sample from while its marginal action density is unavailable:
+              every terminal action hides an integral over latent variables and generation paths.
+            </p>
+          </article>
+          <article>
+            <h2>Fewer sampler steps are not enough.</h2>
+            <p>
+              One-step and few-step policies can reduce deployment cost, but they often inherit indirect entropy
+              handling, extra training complexity, or the familiar tradeoff where speed arrives with weaker returns.
+            </p>
+          </article>
+          <article>
+            <h2>SoftGAC changes the object being regularized.</h2>
+            <p>
+              Instead of estimating endpoint entropy, it regularizes the full latent generation path against a
+              high-entropy reference process.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="method" class="section method-section">
+        <div class="section-kicker">
+          <span class="axis-badge axis-soft">Soft</span>
+          The soft move
+        </div>
+        <div class="two-column">
+          <div>
+            <h2>A soft objective for expressive implicit actors.</h2>
+          </div>
+          <div class="lead-stack">
+            <p>
+              The actor is expressive because it is an implicit sampler: it starts from noise, follows a short
+              latent bridge, and outputs an action. Many internal paths can land in different action modes.
+            </p>
+            <p>
+              The difficulty is softness: the endpoint action density is hidden, so the usual SAC entropy term is
+              not directly available. SoftGAC lifts the soft objective to the sampled path, while preserving the
+              SAC endpoint target in the marginal action distribution.
+            </p>
+          </div>
+        </div>
+
+        <div class="soft-idea-grid reveal">
+          <article class="soft-idea-card">
+            <span>Expressive</span>
+            <h3>Sample paths, not a single mode</h3>
+            <p>
+              The actor can keep the multimodal behavior of latent generative policies without exposing a closed-form
+              endpoint density.
+            </p>
+          </article>
+
+          <article class="soft-idea-card">
+            <span>Soft</span>
+            <h3>Move entropy to the route</h3>
+            <p>
+              Regularize the generated path against a high-entropy reference bridge, instead of estimating endpoint
+              entropy after the fact.
+            </p>
+          </article>
+
+          <article class="soft-idea-card">
+            <span>Principled</span>
+            <h3>Keep SAC's endpoint goal</h3>
+            <p>
+              The path-space lift preserves the MaxEnt endpoint target; the extra regularization shapes how the
+              action is reached.
+            </p>
+          </article>
+        </div>
+
+        <figure class="wide-figure bridge-figure reveal">
+          <img
+            src="assets/figures/softgac_bridge_overview.png"
+            alt="SoftGAC bridge overview showing actor and reference latent paths with local KL terms that sum to control energy."
+          >
+          <figcaption>
+            The critic still scores the terminal action. The soft penalty guides the route used by the structured
+            bridge to reach that action.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section visuals-section">
+        <div class="section-kicker">
+          <span class="axis-badge axis-expressive-soft">Expressive + Soft</span>
+          Bridge intuition
+        </div>
+        <div class="two-column">
+          <div>
+            <h2>Value-guided paths without losing stochasticity.</h2>
+          </div>
+          <div class="lead-stack">
+            <p>
+              Think of the reference bridge as a broad, high-entropy way to move through latent space. The actor can
+              spend control energy to bend those paths toward actions that the critic values.
+            </p>
+            <p>
+              A small budget keeps many routes alive; a larger budget concentrates probability near high-value
+              modes. This is the visual intuition behind being expressive and soft at the same time.
+            </p>
+          </div>
+        </div>
+        <figure class="wide-figure reveal">
+          <img
+            src="assets/figures/softgac_toy_bridge_2d.png"
+            alt="2D bridge visualization showing critic modes, intermediate latent bridge densities, and terminal policy densities under different control-energy budgets."
+          >
+          <figcaption>
+            In a controlled 2D critic, bridge densities move from the high-entropy reference toward value modes as
+            the control-energy budget increases.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section mechanism-section">
+        <div class="section-kicker">
+          <span class="axis-badge axis-soft">Soft</span>
+          What the path view buys
+        </div>
+        <div class="mechanism-grid">
+          <article class="mechanism">
+            <span>01</span>
+            <h3>Softness becomes analytical</h3>
+            <p>
+              For Gaussian bridge transitions, the finite-step path KL factors into closed-form local terms. No
+              endpoint entropy estimator, no entropy bound, no proxy objective.
+            </p>
+          </article>
+          <article class="mechanism">
+            <span>02</span>
+            <h3>Expressiveness stays generative</h3>
+            <p>
+              The actor is still stochastic latent generation. Multiple bridge paths can reach different terminal
+              action modes while value guides the transport.
+            </p>
+          </article>
+          <article class="mechanism">
+            <span>03</span>
+            <h3>The actor update has a target</h3>
+            <p>
+              The sampled loss \(\alpha \mathcal{C}_\theta(s,\tau) - Q(s,T(z_K))\) is a reverse-KL
+              projection direction toward the ideal soft bridge.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="cost" class="section compute-section">
+        <div class="section-kicker">
+          <span class="axis-badge axis-cheap">Cheap</span>
+          Cheap by design
+        </div>
+        <div class="two-column">
+          <div>
+            <h2>Same actor budget, different computation.</h2>
+          </div>
+          <div class="lead-stack">
+            <p>
+              The comparison keeps actor parameter counts in the same range. SoftGAC is not a larger network hiding
+              sampler cost in parameters; its advantage comes from how the actor is structured and evaluated.
+            </p>
+            <p>
+              Diffusion and flow policies spend the same actor network repeatedly across denoising or refinement
+              steps. SoftGAC spends a comparable actor budget once, through a structured bridge whose local
+              transitions expose the path KL used by the soft objective.
+            </p>
+          </div>
+        </div>
+
+        <figure class="wide-figure actor-comparison-figure reveal">
+          <img
+            src="assets/figures/blockbox_vs_whitebox_twocolumn.png"
+            alt="Cartoon comparison of diffusion or flow actors repeatedly calling a shared black-box sampler versus SoftGAC using one structured white-box bridge actor with local KL costs."
+            loading="lazy"
+          >
+          <figcaption>
+            The actor budget is comparable: diffusion and flow policies reuse one shared sampler many times as NFE
+            grows, while SoftGAC spends the budget once in a structured actor whose bridge transitions expose local KL
+            costs.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="evidence" class="section evidence-section">
+        <div class="section-kicker">
+          <span class="axis-badge axis-better">Better</span>
+          The evidence
+        </div>
+        <div class="two-column">
+          <div>
+            <h2>Low cost is not bought by surrendering performance.</h2>
+          </div>
+          <div class="lead-stack">
+            <p>
+              The experiments compare SoftGAC against diffusion and flow-matching actor-critic baselines under a
+              unified JAX codebase, shared main critic update, comparable actor parameter budgets, and 8 seeds.
+            </p>
+            <p>
+              Across the full 12-task suite, the one-pass bridge actor is not merely competitive with high-NFE
+              policies. The hard locomotion and obstacle tasks make the compute-return gap especially clear.
+            </p>
+          </div>
+        </div>
+
+        <div class="figure-grid">
+          <figure class="wide-figure reveal">
+            <img
+              src="assets/figures/iqm_learning_curves_all12.svg"
+              alt="Full IQM learning curves on twelve benchmark tasks comparing SoftGAC with FLAC, DIME, FlowRL, QSM, QVPO, and CrossQ-SAC."
+            >
+            <figcaption>
+              Across all 12 benchmark tasks, the full learning curves show that SoftGAC's gains are not caused by a
+              small hard-task subset.
+            </figcaption>
+          </figure>
+
+          <figure class="wide-figure reveal">
+            <img
+              src="assets/figures/inference_time_by_domain.svg"
+              alt="Bar charts showing per-action inference time and actor parameter count by domain."
+            >
+            <figcaption>
+              Per-action latency stays in the low-latency one-pass regime, far below the high-NFE diffusion
+              baselines, while actor parameters remain comparable.
+            </figcaption>
+          </figure>
+
+          <figure class="wide-figure reveal">
+            <img
+              src="assets/figures/soft_regularizer_ablation_curves.svg"
+              alt="Ablation curves comparing SoftGAC with and without the soft path regularizer."
+            >
+            <figcaption>
+              Removing the path-space soft regularizer hurts consistently, showing that the gains are not only from
+              the bridge architecture.
+            </figcaption>
+          </figure>
+
+          <figure class="wide-figure reveal">
+            <img
+              src="assets/figures/compute_return_tradeoff_by_task.svg"
+              alt="Compute-return tradeoff scatter plots for all benchmark tasks."
+            >
+            <figcaption>
+              The Pareto structure is visible task by task: SoftGAC remains close to low-NFE latency while reaching
+              higher or competitive IQM returns.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section interpretation-section">
+        <div class="section-kicker">
+          <span class="axis-badge axis-all">Expressive · Soft · Cheap · Better</span>
+          The answer
+        </div>
+        <div class="story-line">
+          <p>
+            Expressiveness asks whether the actor can represent the action distribution the task actually needs.
+            Softness asks whether the stochasticity is part of the objective rather than a post-hoc exploration
+            trick. Cheapness asks whether computation stays small during both training and deployment; better asks
+            whether lower cost can come with higher returns, not just matching the slower actor.
+          </p>
+          <p>
+            SoftGAC ties the four goals to one structural choice: a short stochastic bridge actor. The path keeps
+            generation expressive, the path-space objective keeps softness principled, one sampled pass keeps compute
+            cheap, and the experiments show the result can be better rather than merely faster.
+          </p>
+        </div>
+      </section>
+
+      <section id="paper" class="section paper-section">
+        <div class="paper-panel">
+          <div>
+            <div class="section-kicker">Paper</div>
+            <h2>Generative Actor-Critic with Soft Bridge Policies</h2>
+            <p>
+              Ke He, Le He, Shunpu Tang, Yafei Wang, and Lisheng Fan. Code is available with the paper.
+            </p>
+          </div>
+          <div class="paper-actions">
+            <a class="button primary" href="assets/2605.08733v1.pdf">Download PDF</a>
+            <a class="button secondary" href="https://arxiv.org/abs/2605.08733">View on arXiv</a>
+            <a class="button secondary" href="https://github.com/skypitcher/soft_gac_jax">GitHub</a>
+          </div>
+        </div>
+        <div class="bibtex-panel reveal">
+          <div class="bibtex-head">
+            <div>
+              <span>Citation</span>
+              <h3>BibTeX</h3>
+            </div>
+            <button class="button secondary copy-bibtex" type="button" data-copy-target="softgac-bibtex">
+              Copy BibTeX
+            </button>
+          </div>
+          <pre><code id="softgac-bibtex">@article{he2026generative,
+  title         = {Generative Actor-Critic with Soft Bridge Policies},
+  author        = {He, Ke and He, Le and Tang, Shunpu and Wang, Yafei and Fan, Lisheng},
+  journal       = {arXiv preprint arXiv:2605.08733},
+  year          = {2026},
+  archivePrefix = {arXiv},
+  eprint        = {2605.08733},
+  url           = {https://arxiv.org/abs/2605.08733}
+}</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>SoftGAC</span>
+      <span>Expressive, soft, cheap, and better generative actors.</span>
+    </footer>
+
+    <script src="script.js?v=20260606d"></script>
+  </body>
+</html>
