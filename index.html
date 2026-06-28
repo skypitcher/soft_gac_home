@@ -8,7 +8,7 @@
       name="description"
       content="SoftGAC (Generative Actor-Critic with Soft Bridge Policies) asks whether a reinforcement-learning actor can be expressive, soft, cheap, and still outperform high-NFE generative policies."
     >
-    <link rel="stylesheet" href="styles.css?v=20260624i">
+    <link rel="stylesheet" href="styles.css?v=20260628b">
     <script>
       window.MathJax = {
         tex: {
@@ -219,17 +219,22 @@
       <section id="cost" class="section compute-section">
         <div class="two-column">
           <div>
-            <h2>Same actor budget, different computation.</h2>
+            <h2>A faster actor could have been stronger all along.</h2>
           </div>
           <div class="lead-stack">
             <p>
-              The comparison keeps actor parameter counts in the same range. SoftGAC is not a larger network hiding
-              sampler cost in parameters; its advantage comes from how the actor is structured and evaluated.
+              The second obstacle is computation, but the goal is not merely to make sampling faster. Diffusion and
+              flow actors usually generate one action by repeatedly calling a shared sampler, so high NFE increases
+              latency, actor-update cost, activation memory, and the depth of backpropagation through the sampler.
+              One-step and few-step reductions can lower sampling cost, but they often buy that speed by accepting
+              weaker returns.
             </p>
             <p>
-              Diffusion and flow policies spend the same actor network repeatedly across denoising or refinement
-              steps. SoftGAC spends a comparable actor budget once, through a structured bridge whose local
-              transitions expose the path KL used by the soft objective.
+              We argue against this old bargain, and believe that careful actor-structure design can make a faster
+              actor stronger, matching or even outperforming high-NFE diffusion policies with a single sampled forward
+              pass and a parameter budget comparable to strong actor baselines.
+              The comparison is therefore not a larger network hiding cost in parameters, but many black-box sampler
+              calls versus one structured white-box bridge call.
             </p>
           </div>
         </div>
@@ -314,12 +319,12 @@
 
       <section class="section interpretation-section">
         <div class="story-line">
-          <p>
-            Expressiveness asks whether the actor can represent the action distribution the task actually needs.
-            Softness asks whether the stochasticity is part of the objective rather than a post-hoc exploration
-            trick. Cheapness asks whether computation stays small during both training and deployment; better asks
-            whether lower cost can come with higher returns, not just matching the slower actor.
-          </p>
+          <ul class="story-bullets">
+            <li><strong>Expressiveness</strong> asks whether the actor can represent the action distribution the task actually needs.</li>
+            <li><strong>Softness</strong> asks whether stochasticity is part of the objective rather than a post-hoc exploration trick.</li>
+            <li><strong>Cheapness</strong> asks whether computation stays small during both training and deployment.</li>
+            <li><strong>Better</strong> asks whether lower cost can come with higher returns, not just matching the slower actor.</li>
+          </ul>
           <p>
             SoftGAC ties the four goals to one structural choice: a short stochastic bridge actor. The path keeps
             generation expressive, the path-space objective keeps softness principled, one sampled pass keeps compute
