@@ -3,12 +3,117 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SoftGAC: Generative Actor-Critic with Soft Bridge Policies</title>
+    <title>SoftGAC: Generative Actor-Critic for Maximum Entropy RL, Diffusion and Flow Policies</title>
     <meta
       name="description"
-      content="SoftGAC (Generative Actor-Critic with Soft Bridge Policies) asks whether a reinforcement-learning actor can be expressive, soft, cheap, and still outperform high-NFE generative policies."
+      content="SoftGAC is a generative actor-critic with soft bridge policies for maximum entropy reinforcement learning, designed as an expressive, soft, cheap, and stronger alternative to high-NFE diffusion policy, flow policy, and flow matching policy actors."
     >
-    <link rel="stylesheet" href="styles.css?v=20260628b">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="author" content="Ke He, Le He, Shunpu Tang, Yafei Wang, Lisheng Fan">
+    <link rel="canonical" href="https://skypitcher.github.io/soft_gac_home/">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="SoftGAC">
+    <meta property="og:title" content="SoftGAC: Generative Actor-Critic for Maximum Entropy RL">
+    <meta
+      property="og:description"
+      content="A project page for SoftGAC, an expressive, soft, cheap, and stronger generative actor for maximum entropy RL, diffusion policy, flow policy, and flow matching policy comparisons."
+    >
+    <meta property="og:url" content="https://skypitcher.github.io/soft_gac_home/">
+    <meta property="og:image" content="https://skypitcher.github.io/soft_gac_home/assets/figures/blockbox_vs_whitebox_twocolumn.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SoftGAC: Generative Actor-Critic for Maximum Entropy RL">
+    <meta
+      name="twitter:description"
+      content="Soft bridge policies for expressive, principled, low-cost generative actor-critic learning beyond high-NFE diffusion and flow policies."
+    >
+    <meta name="twitter:image" content="https://skypitcher.github.io/soft_gac_home/assets/figures/blockbox_vs_whitebox_twocolumn.png">
+    <meta name="citation_title" content="Generative Actor-Critic with Soft Bridge Policies">
+    <meta name="citation_author" content="He, Ke">
+    <meta name="citation_author" content="He, Le">
+    <meta name="citation_author" content="Tang, Shunpu">
+    <meta name="citation_author" content="Wang, Yafei">
+    <meta name="citation_author" content="Fan, Lisheng">
+    <meta name="citation_publication_date" content="2026">
+    <meta name="citation_arxiv_id" content="2605.08733">
+    <meta name="citation_pdf_url" content="https://skypitcher.github.io/soft_gac_home/assets/2605.08733v1.pdf">
+    <link rel="stylesheet" href="styles.css?v=20260628c">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ScholarlyArticle",
+        "name": "Generative Actor-Critic with Soft Bridge Policies",
+        "headline": "SoftGAC: Generative Actor-Critic for Maximum Entropy RL",
+        "alternateName": "SoftGAC",
+        "description": "SoftGAC is a generative actor-critic with soft bridge policies for maximum entropy reinforcement learning. It targets expressive stochastic actors beyond Gaussian policies and high-NFE diffusion policy, flow policy, and flow matching policy baselines.",
+        "url": "https://skypitcher.github.io/soft_gac_home/",
+        "image": "https://skypitcher.github.io/soft_gac_home/assets/figures/blockbox_vs_whitebox_twocolumn.png",
+        "datePublished": "2026",
+        "inLanguage": "en",
+        "keywords": [
+          "SoftGAC",
+          "generative actor-critic",
+          "maximum entropy reinforcement learning",
+          "MaxEnt RL",
+          "diffusion policy",
+          "flow policy",
+          "flow matching policy",
+          "soft bridge policies",
+          "stochastic bridge",
+          "reinforcement learning"
+        ],
+        "author": [
+          {
+            "@type": "Person",
+            "name": "Ke He",
+            "affiliation": {
+              "@type": "Organization",
+              "name": "Guangzhou University"
+            }
+          },
+          {
+            "@type": "Person",
+            "name": "Le He",
+            "affiliation": {
+              "@type": "Organization",
+              "name": "Guangzhou University"
+            }
+          },
+          {
+            "@type": "Person",
+            "name": "Shunpu Tang",
+            "affiliation": {
+              "@type": "Organization",
+              "name": "Zhejiang University"
+            }
+          },
+          {
+            "@type": "Person",
+            "name": "Yafei Wang",
+            "affiliation": {
+              "@type": "Organization",
+              "name": "Southeast University"
+            }
+          },
+          {
+            "@type": "Person",
+            "name": "Lisheng Fan",
+            "affiliation": {
+              "@type": "Organization",
+              "name": "Guangzhou University"
+            }
+          }
+        ],
+        "sameAs": [
+          "https://arxiv.org/abs/2605.08733",
+          "https://github.com/skypitcher/soft_gac_jax"
+        ],
+        "encoding": {
+          "@type": "MediaObject",
+          "contentUrl": "https://skypitcher.github.io/soft_gac_home/assets/2605.08733v1.pdf",
+          "encodingFormat": "application/pdf"
+        }
+      }
+    </script>
     <script>
       window.MathJax = {
         tex: {
@@ -53,6 +158,10 @@
             SoftGAC keeps the multimodal power of latent generative policies, replaces endpoint entropy estimates
             with analytical path-wise soft regularization, and uses a single stochastic forward pass to keep action generation
             cheap while aiming for higher returns, not just faster inference.
+          </p>
+          <p class="hero-context">
+            In maximum entropy reinforcement learning, SoftGAC is positioned against diffusion policy, flow policy,
+            and flow matching policy actors that rely on high-NFE generative sampling.
           </p>
         </div>
       </section>

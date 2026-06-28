@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
+  <url>
+    <loc>https://skypitcher.github.io/soft_gac_home/</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://skypitcher.github.io/soft_gac_home/assets/figures/blockbox_vs_whitebox_twocolumn.png</image:loc>
+      <image:title>Diffusion and flow policy actor versus SoftGAC bridge actor</image:title>
+    </image:image>
+  </url>
+</urlset>

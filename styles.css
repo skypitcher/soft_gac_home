@@ -183,6 +183,15 @@ video {
   text-align: left;
 }
 
+.hero-context {
+  max-width: 920px;
+  margin: 10px auto 0;
+  color: var(--muted);
+  font-size: 0.96rem;
+  line-height: 1.6;
+  text-align: left;
+}
+
 .stats-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

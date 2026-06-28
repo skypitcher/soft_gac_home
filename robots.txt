@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /soft_gac_home/
+
+Sitemap: https://skypitcher.github.io/soft_gac_home/sitemap.xml
