@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SoftGAC: Generative Actor-Critic for Maximum Entropy RL, Diffusion and Flow Policies</title>
+    <title>SoftGAC | Generative Actor-Critic with Soft Bridge Policies | NeurIPS 2026</title>
     <meta
       name="description"
-      content="SoftGAC is a generative actor-critic with soft bridge policies for maximum entropy reinforcement learning, designed as an expressive, soft, cheap, and stronger alternative to high-NFE diffusion policy, flow policy, and flow matching policy actors."
+      content="SoftGAC for maximum entropy RL: analytical soft regularization, one network evaluation per action, and stronger returns with comparable total actor parameters."
     >
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="author" content="Ke He, Le He, Shunpu Tang, Yafei Wang, Lisheng Fan">
@@ -16,17 +16,17 @@
     <meta property="og:title" content="SoftGAC: Generative Actor-Critic for Maximum Entropy RL">
     <meta
       property="og:description"
-      content="A project page for SoftGAC, an expressive, soft, cheap, and stronger generative actor for maximum entropy RL, diffusion policy, flow policy, and flow matching policy comparisons."
+      content="SoftGAC challenges two common compromises in generative RL: relying on entropy approximations for softness, and sacrificing performance for speed."
     >
     <meta property="og:url" content="https://skypitcher.github.io/soft_gac_home/">
-    <meta property="og:image" content="https://skypitcher.github.io/soft_gac_home/assets/figures/blockbox_vs_whitebox_twocolumn.png">
+    <meta property="og:image" content="https://skypitcher.github.io/soft_gac_home/assets/figures/softgac_bridge_preview.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="SoftGAC: Generative Actor-Critic for Maximum Entropy RL">
     <meta
       name="twitter:description"
-      content="Soft bridge policies for expressive, principled, low-cost generative actor-critic learning beyond high-NFE diffusion and flow policies."
+      content="Analytical soft regularization and one network evaluation per action: SoftGAC achieves stronger returns on challenging tasks with comparable total actor parameters."
     >
-    <meta name="twitter:image" content="https://skypitcher.github.io/soft_gac_home/assets/figures/blockbox_vs_whitebox_twocolumn.png">
+    <meta name="twitter:image" content="https://skypitcher.github.io/soft_gac_home/assets/figures/softgac_bridge_preview.png">
     <meta name="citation_title" content="Generative Actor-Critic with Soft Bridge Policies">
     <meta name="citation_author" content="He, Ke">
     <meta name="citation_author" content="He, Le">
@@ -34,85 +34,93 @@
     <meta name="citation_author" content="Wang, Yafei">
     <meta name="citation_author" content="Fan, Lisheng">
     <meta name="citation_publication_date" content="2026">
+    <meta name="citation_conference_title" content="Advances in Neural Information Processing Systems">
     <meta name="citation_arxiv_id" content="2605.08733">
-    <meta name="citation_pdf_url" content="https://skypitcher.github.io/soft_gac_home/assets/2605.08733v1.pdf">
-    <link rel="stylesheet" href="styles.css?v=20260628c">
+    <meta name="citation_pdf_url" content="https://skypitcher.github.io/soft_gac_home/assets/neurips_2026.pdf">
+    <link rel="preload" href="assets/fonts/newsreader-latin-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/newsreader-latin-italic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="styles.css?v=20261014-editorial-color">
     <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "ScholarlyArticle",
-        "name": "Generative Actor-Critic with Soft Bridge Policies",
-        "headline": "SoftGAC: Generative Actor-Critic for Maximum Entropy RL",
-        "alternateName": "SoftGAC",
-        "description": "SoftGAC is a generative actor-critic with soft bridge policies for maximum entropy reinforcement learning. It targets expressive stochastic actors beyond Gaussian policies and high-NFE diffusion policy, flow policy, and flow matching policy baselines.",
-        "url": "https://skypitcher.github.io/soft_gac_home/",
-        "image": "https://skypitcher.github.io/soft_gac_home/assets/figures/blockbox_vs_whitebox_twocolumn.png",
-        "datePublished": "2026",
-        "inLanguage": "en",
-        "keywords": [
-          "SoftGAC",
-          "generative actor-critic",
-          "maximum entropy reinforcement learning",
-          "MaxEnt RL",
-          "diffusion policy",
-          "flow policy",
-          "flow matching policy",
-          "soft bridge policies",
-          "stochastic bridge",
-          "reinforcement learning"
-        ],
-        "author": [
-          {
-            "@type": "Person",
-            "name": "Ke He",
-            "affiliation": {
-              "@type": "Organization",
-              "name": "Guangzhou University"
-            }
-          },
-          {
-            "@type": "Person",
-            "name": "Le He",
-            "affiliation": {
-              "@type": "Organization",
-              "name": "Guangzhou University"
-            }
-          },
-          {
-            "@type": "Person",
-            "name": "Shunpu Tang",
-            "affiliation": {
-              "@type": "Organization",
-              "name": "Zhejiang University"
-            }
-          },
-          {
-            "@type": "Person",
-            "name": "Yafei Wang",
-            "affiliation": {
-              "@type": "Organization",
-              "name": "Southeast University"
-            }
-          },
-          {
-            "@type": "Person",
-            "name": "Lisheng Fan",
-            "affiliation": {
-              "@type": "Organization",
-              "name": "Guangzhou University"
-            }
-          }
-        ],
-        "sameAs": [
-          "https://arxiv.org/abs/2605.08733",
-          "https://github.com/skypitcher/soft_gac_jax"
-        ],
-        "encoding": {
-          "@type": "MediaObject",
-          "contentUrl": "https://skypitcher.github.io/soft_gac_home/assets/2605.08733v1.pdf",
-          "encodingFormat": "application/pdf"
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "name": "Generative Actor-Critic with Soft Bridge Policies",
+  "headline": "SoftGAC: Generative Actor-Critic for Maximum Entropy RL",
+  "alternateName": "SoftGAC",
+  "description": "Soft generative actor-critic (SoftGAC) jointly designs the actor's stochastic structure and soft objective. Explicit internal paths enable analytical soft regularization without estimating action entropy. Each action requires one network evaluation, with stronger returns on challenging control tasks under a comparable total actor parameter budget.",
+  "url": "https://skypitcher.github.io/soft_gac_home/",
+  "image": "https://skypitcher.github.io/soft_gac_home/assets/figures/softgac_bridge_preview.png",
+  "datePublished": "2026",
+  "inLanguage": "en",
+  "keywords": [
+    "SoftGAC",
+    "generative actor-critic",
+    "maximum entropy reinforcement learning",
+    "MaxEnt RL",
+    "diffusion policy",
+    "flow policy",
+    "flow matching policy",
+    "soft bridge policies",
+    "stochastic bridge",
+    "reinforcement learning"
+  ],
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Ke He",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Guangzhou University"
       }
+    },
+    {
+      "@type": "Person",
+      "name": "Le He",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Guangzhou University"
+      }
+    },
+    {
+      "@type": "Person",
+      "name": "Shunpu Tang",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Zhejiang University"
+      }
+    },
+    {
+      "@type": "Person",
+      "name": "Yafei Wang",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Southeast University"
+      }
+    },
+    {
+      "@type": "Person",
+      "name": "Lisheng Fan",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Guangzhou University"
+      }
+    }
+  ],
+  "sameAs": [
+    "https://arxiv.org/abs/2605.08733",
+    "https://github.com/skypitcher/soft_gac_jax"
+  ],
+  "encoding": {
+    "@type": "MediaObject",
+    "contentUrl": "https://skypitcher.github.io/soft_gac_home/assets/neurips_2026.pdf",
+    "encodingFormat": "application/pdf"
+  },
+  "dateModified": "2026-10-14",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Advances in Neural Information Processing Systems (NeurIPS 2026)"
+  }
+}
     </script>
     <script>
       window.MathJax = {
@@ -129,366 +137,171 @@
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   </head>
   <body>
+    <a class="skip-link" href="#trilemma">Skip to the research</a>
     <main id="top">
-      <section class="hero">
-        <div class="hero-inner">
-          <h1>Generative Actor-Critic with Soft Bridge Policies</h1>
-          <p class="hero-question">
-            Can an RL actor be
-            <span class="hero-word expressive-word">expressive</span>,
-            <span class="hero-word soft-word">soft</span>,
-            <span class="hero-word cheap-word">cheap</span>, and
-            <span class="hero-word better-word">better</span>?
-          </p>
-          <p class="authors">
-            Ke He<sup>1</sup> · Le He<sup>1</sup> · Shunpu Tang<sup>2</sup> ·
-            Yafei Wang<sup>3</sup> · Lisheng Fan<sup>1</sup>
-          </p>
-          <p class="affiliations">
-            <sup>1</sup>Guangzhou University · <sup>2</sup>Zhejiang University ·
-            <sup>3</sup>Southeast University
-          </p>
-          <div class="hero-actions" aria-label="Paper links">
-            <a class="button primary" href="assets/2605.08733v1.pdf">Paper PDF</a>
-            <a class="button secondary" href="https://arxiv.org/abs/2605.08733">arXiv</a>
-            <a class="button secondary" href="https://github.com/skypitcher/soft_gac_jax">Code</a>
+      <header class="hero page-width">
+        <p class="venue">NeurIPS 2026</p>
+        <div class="hero-top">
+          <div class="hero-title">
+            <h1><span class="title-first">Generative Actor-Critic</span>
+              <span class="title-second">with <em>Soft Bridge Policies</em></span></h1>
           </div>
-          <p class="abstract-label">Overview</p>
-          <p class="hero-copy">
-            SoftGAC keeps the multimodal power of latent generative policies, replaces endpoint entropy estimates
-            with analytical path-wise soft regularization, and uses a single stochastic forward pass to keep action generation
-            cheap while aiming for higher returns, not just faster inference.
-          </p>
-          <p class="hero-context">
-            In maximum entropy reinforcement learning, SoftGAC is positioned against diffusion policy, flow policy,
-            and flow matching policy actors that rely on high-NFE generative sampling.
-          </p>
+          <div class="author-block">
+        <p class="authors">
+          <span>Ke He<sup>1</sup></span>
+          <span><a href="mailto:hele@e.gzhu.edu.cn">Le He<sup>1</sup></a></span>
+          <span>Shunpu Tang<sup>2</sup></span>
+          <span>Yafei Wang<sup>3</sup></span>
+          <span>Lisheng Fan<sup>1</sup></span>
+        </p>
+        <p class="affiliations">
+          <span><sup>1</sup> Guangzhou University</span>
+          <span><sup>2</sup> Zhejiang University</span>
+          <span><sup>3</sup> Southeast University</span>
+        </p>
+          </div>
+        <div class="resource-links" aria-label="Paper resources">
+          <a class="button primary" href="assets/neurips_2026.pdf">Paper</a>
+          <a class="button" href="https://arxiv.org/abs/2605.08733">arXiv</a>
+          <a class="button" href="https://github.com/skypitcher/soft_gac_jax">Code</a>
+          <a class="button" href="#paper">BibTeX</a>
         </div>
-      </section>
+        </div>
+        <div class="hero-intro">
+        <p class="hero-question">
+          <span class="slogan-premise"><span class="expressive-word">Expressive</span>, <span class="soft-word">soft</span>, and <span class="cheap-word">cheap</span>—</span>
+          <span class="slogan-question">could a <em>faster</em> actor also be a <em class="better-word">stronger</em> one?</span>
+        </p>
+        <p class="hero-copy">
+          <strong>Soft generative actor-critic (SoftGAC)</strong> challenges two common compromises in generative RL:
+          relying on entropy approximations for softness, and sacrificing performance for speed.
+          By designing the actor’s stochastic structure and soft objective together, it makes soft regularization analytical
+          and generates each action with one network evaluation—outperforming strong iterative diffusion and flow policies
+          on challenging tasks under a comparable total actor parameter budget.
+        </p>
+        </div>
+      </header>
 
-      <section class="stats-strip" aria-label="Main takeaways">
-        <div>
-          <strong>Expressive actor</strong>
-          <span>multimodal stochastic bridge policy</span>
-        </div>
-        <div>
-          <strong>Principled softness</strong>
-          <span>exact path KL as control energy</span>
-        </div>
-        <div>
-          <strong>Cheap by design</strong>
-          <span>comparable params, one sampled call</span>
-        </div>
-        <div>
-          <strong>Hard-task gains</strong>
-          <span>stronger returns where high-NFE actors struggle</span>
-        </div>
-      </section>
-
-      <section id="rollouts" class="section rollouts-section" aria-label="SoftGAC rollout videos">
+      <section id="rollouts" class="rollouts page-width" aria-label="SoftGAC policy rollouts">
         <div class="rollout-grid">
-          <figure class="rollout-card reveal">
-            <video autoplay muted loop playsinline controls preload="metadata" aria-label="SoftGAC Humanoid Run rollout">
-              <source src="assets/videos/humanoid-run.mp4" type="video/mp4">
-            </video>
-            <figcaption>Humanoid Run</figcaption>
-          </figure>
-
-          <figure class="rollout-card reveal">
-            <video autoplay muted loop playsinline controls preload="metadata" aria-label="SoftGAC Dog Run rollout">
-              <source src="assets/videos/dog-run.mp4" type="video/mp4">
-            </video>
-            <figcaption>Dog Run</figcaption>
-          </figure>
-
-          <figure class="rollout-card reveal">
-            <video autoplay muted loop playsinline controls preload="metadata" aria-label="SoftGAC H1 Hurdle rollout">
-              <source src="assets/videos/h1-hurdle.mp4" type="video/mp4">
-            </video>
-            <figcaption>H1 Hurdle</figcaption>
-          </figure>
-
-          <figure class="rollout-card reveal">
-            <video autoplay muted loop playsinline controls preload="metadata" aria-label="SoftGAC H1 Run rollout">
-              <source src="assets/videos/h1-run.mp4" type="video/mp4">
-            </video>
-            <figcaption>H1 Run</figcaption>
-          </figure>
+          <figure><video autoplay muted loop playsinline controls preload="metadata" poster="assets/videos/humanoid-run-poster.jpg" aria-label="SoftGAC Humanoid Run rollout"><source src="assets/videos/humanoid-run.mp4" type="video/mp4"></video><figcaption>Humanoid Run</figcaption></figure>
+          <figure><video autoplay muted loop playsinline controls preload="metadata" poster="assets/videos/dog-run-poster.jpg" aria-label="SoftGAC Dog Run rollout"><source src="assets/videos/dog-run.mp4" type="video/mp4"></video><figcaption>Dog Run</figcaption></figure>
+          <figure><video autoplay muted loop playsinline controls preload="metadata" poster="assets/videos/h1-hurdle-poster.jpg" aria-label="SoftGAC H1 Hurdle rollout"><source src="assets/videos/h1-hurdle.mp4" type="video/mp4"></video><figcaption>H1 Hurdle</figcaption></figure>
+          <figure><video autoplay muted loop playsinline controls preload="metadata" poster="assets/videos/h1-run-poster.jpg" aria-label="SoftGAC H1 Run rollout"><source src="assets/videos/h1-run.mp4" type="video/mp4"></video><figcaption>H1 Run</figcaption></figure>
         </div>
       </section>
 
-      <section id="trilemma" class="section intro-section">
-        <div class="two-column">
-          <div>
-            <h2>The old bargain is too cramped.</h2>
-          </div>
-          <div class="lead-stack">
-            <p>
-              Diffusion, score, and flow policies are attractive because their action distributions can be
-              multimodal and highly non-Gaussian. That expressiveness is exactly what a diagonal Gaussian actor
-              struggles to provide in contact-rich, high-dimensional control.
-            </p>
-            <p>
-              But MaxEnt RL also wants a real soft objective, and online actor-critic wants action generation to
-              stay cheap during both environment interaction and policy updates. Existing generative actors often
-              give up one demand in this bargain: softness becomes a bound, estimator, or proxy; cheapness becomes
-              inference-only; or performance drops when the sampler is shortened.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section id="method" class="section method-section">
-        <div class="two-column">
-          <div>
-            <h2>A soft objective for expressive implicit actors.</h2>
-          </div>
-          <div class="lead-stack">
-            <p>
-              The actor is expressive because it is an implicit sampler: it starts from noise, follows a short
-              latent bridge, and outputs an action. Many internal paths can land in different action modes.
-            </p>
-            <p>
-              The difficulty is softness: the endpoint action density is hidden, so the usual SAC entropy term is
-              not directly available. SoftGAC lifts the soft objective to the sampled path, while preserving the
-              SAC endpoint target in the marginal action distribution.
-            </p>
-          </div>
-        </div>
-
-        <div class="soft-idea-grid reveal">
-          <article class="soft-idea-card">
-            <span>Expressive</span>
-            <h3>Sample paths, not a single mode</h3>
-            <p>
-              The actor can keep the multimodal behavior of latent generative policies without exposing a closed-form
-              endpoint density.
-            </p>
-          </article>
-
-          <article class="soft-idea-card">
-            <span>Soft</span>
-            <h3>Move entropy to the route</h3>
-            <p>
-              Regularize the generated path against a high-entropy reference bridge, instead of estimating endpoint
-              entropy after the fact.
-            </p>
-          </article>
-
-          <article class="soft-idea-card">
-            <span>Principled</span>
-            <h3>Keep SAC's endpoint goal</h3>
-            <p>
-              The path-space lift preserves the MaxEnt endpoint target; the extra regularization shapes how the
-              action is reached.
-            </p>
-          </article>
-        </div>
-
-        <figure class="wide-figure bridge-figure reveal">
-          <img
-            src="assets/figures/softgac_bridge_overview.png"
-            alt="SoftGAC bridge overview showing actor and reference latent paths with local KL terms that sum to control energy."
-          >
-          <figcaption>
-            The critic still scores the terminal action. The soft penalty guides the route used by the structured
-            bridge to reach that action.
-          </figcaption>
-        </figure>
-      </section>
-
-      <section class="section visuals-section">
-        <div class="two-column">
-          <div>
-            <h2>Value-guided paths without losing stochasticity.</h2>
-          </div>
-          <div class="lead-stack">
-            <p>
-              Think of the reference bridge as a broad, high-entropy way to move through latent space. The actor can
-              spend control energy to bend those paths toward actions that the critic values.
-            </p>
-            <p>
-              A small budget keeps many routes alive; a larger budget concentrates probability near high-value
-              modes. This is the visual intuition behind being expressive and soft at the same time.
-            </p>
-          </div>
-        </div>
-        <figure class="wide-figure reveal">
-          <img
-            src="assets/figures/softgac_toy_bridge_2d.png"
-            alt="2D bridge visualization showing critic modes, intermediate latent bridge densities, and terminal policy densities under different control-energy budgets."
-          >
-          <figcaption>
-            In a controlled 2D critic, bridge densities move from the high-entropy reference toward value modes as
-            the control-energy budget increases.
-          </figcaption>
-        </figure>
-      </section>
-
-      <section id="cost" class="section compute-section">
-        <div class="two-column">
-          <div>
-            <h2>A faster actor could have been stronger all along.</h2>
-          </div>
-          <div class="lead-stack">
-            <p>
-              The second obstacle is computation, but the goal is not merely to make sampling faster. Diffusion and
-              flow actors usually generate one action by repeatedly calling a shared sampler, so high NFE increases
-              latency, actor-update cost, activation memory, and the depth of backpropagation through the sampler.
-              One-step and few-step reductions can lower sampling cost, but they often buy that speed by accepting
-              weaker returns.
-            </p>
-            <p>
-              We argue against this old bargain, and believe that careful actor-structure design can make a faster
-              actor stronger, matching or even outperforming high-NFE diffusion policies with a single sampled forward
-              pass and a parameter budget comparable to strong actor baselines.
-              The comparison is therefore not a larger network hiding cost in parameters, but many black-box sampler
-              calls versus one structured white-box bridge call.
-            </p>
-          </div>
-        </div>
-
-        <figure class="wide-figure actor-comparison-figure reveal">
-          <img
-            src="assets/figures/blockbox_vs_whitebox_twocolumn.png"
-            alt="Cartoon comparison of diffusion or flow actors repeatedly calling a shared black-box sampler versus SoftGAC using one structured white-box bridge actor with local KL costs."
-            loading="lazy"
-          >
-          <figcaption>
-            The actor budget is comparable: diffusion and flow policies reuse one shared sampler many times as NFE
-            grows, while SoftGAC spends the budget once in a structured actor whose bridge transitions expose local KL
-            costs.
-          </figcaption>
-        </figure>
-      </section>
-
-      <section id="evidence" class="section evidence-section">
-        <div class="two-column">
-          <div>
-            <h2>Low cost is not bought by surrendering performance.</h2>
-          </div>
-          <div class="lead-stack">
-            <p>
-              The experiments compare SoftGAC against diffusion and flow-matching actor-critic baselines under a
-              unified JAX codebase, shared main critic update, comparable actor parameter budgets, and 8 seeds.
-            </p>
-            <p>
-              Across the full 12-task suite, the one-pass bridge actor is not merely competitive with high-NFE
-              policies. The hard locomotion and obstacle tasks make the compute-return gap especially clear.
-            </p>
-          </div>
-        </div>
-
-        <div class="figure-grid">
-          <figure class="wide-figure reveal">
-            <img
-              src="assets/figures/iqm_learning_curves_all12.svg"
-              alt="Full IQM learning curves on twelve benchmark tasks comparing SoftGAC with FLAC, DIME, FlowRL, QSM, QVPO, and CrossQ-SAC."
-            >
-            <figcaption>
-              Across all 12 benchmark tasks, the full learning curves show that SoftGAC's gains are not caused by a
-              small hard-task subset.
-            </figcaption>
-          </figure>
-
-          <figure class="wide-figure reveal">
-            <img
-              src="assets/figures/inference_time_by_domain.svg"
-              alt="Bar charts showing per-action inference time and actor parameter count by domain."
-            >
-            <figcaption>
-              Per-action latency stays in the low-latency one-pass regime, far below the high-NFE diffusion
-              baselines, while actor parameters remain comparable.
-            </figcaption>
-          </figure>
-
-          <figure class="wide-figure reveal">
-            <img
-              src="assets/figures/soft_regularizer_ablation_curves.svg"
-              alt="Ablation curves comparing SoftGAC with and without the soft path regularizer."
-            >
-            <figcaption>
-              Removing the path-space soft regularizer hurts consistently, showing that the gains are not only from
-              the bridge architecture.
-            </figcaption>
-          </figure>
-
-          <figure class="wide-figure reveal">
-            <img
-              src="assets/figures/compute_return_tradeoff_by_task.svg"
-              alt="Compute-return tradeoff scatter plots for all benchmark tasks."
-            >
-            <figcaption>
-              The Pareto structure is visible task by task: SoftGAC remains close to low-NFE latency while reaching
-              higher or competitive IQM returns.
-            </figcaption>
-          </figure>
-        </div>
-      </section>
-
-      <section class="section interpretation-section">
-        <div class="story-line">
-          <ul class="story-bullets">
-            <li><strong>Expressiveness</strong> asks whether the actor can represent the action distribution the task actually needs.</li>
-            <li><strong>Softness</strong> asks whether stochasticity is part of the objective rather than a post-hoc exploration trick.</li>
-            <li><strong>Cheapness</strong> asks whether computation stays small during both training and deployment.</li>
-            <li><strong>Better</strong> asks whether lower cost can come with higher returns, not just matching the slower actor.</li>
+      <section id="trilemma" class="section page-width">
+        <div class="section-lede">
+          <h2>The old bargain is too cramped.</h2>
+          <div class="lede-copy">
+          <p>Diffusion and flow-matching policies can represent rich, multimodal action distributions. Putting that expressiveness to work in soft RL faces two obstacles:</p>
+          <ul class="obstacles">
+            <li><strong>Softness.</strong> Actions are easy to sample, but their marginal densities are often hard to evaluate. Soft regularization therefore typically relies on entropy bounds, estimates, or proxies.</li>
+            <li><strong>Computation.</strong> Repeated network evaluations make sampling expensive; differentiating through them also raises training cost. One-step and few-step variants reduce sampling cost, but often sacrifice returns.</li>
           </ul>
-          <p>
-            SoftGAC ties the four goals to one structural choice: a short stochastic bridge actor. The path keeps
-            generation expressive, the path-space objective keeps softness principled, one sampled pass keeps compute
-            cheap, and the experiments show the result can be better rather than merely faster.
-          </p>
+          </div>
         </div>
       </section>
 
-      <section id="paper" class="section paper-section">
-        <div class="paper-panel">
-          <div>
-            <h2>Generative Actor-Critic with Soft Bridge Policies</h2>
-            <p>
-              Ke He<sup>1</sup>, Le He<sup>1</sup>, Shunpu Tang<sup>2</sup>, Yafei Wang<sup>3</sup>,
-              and Lisheng Fan<sup>1</sup>. Code is available with the paper.
-            </p>
-            <p class="paper-affiliations">
-              <sup>1</sup>Guangzhou University · <sup>2</sup>Zhejiang University ·
-              <sup>3</sup>Southeast University
-            </p>
-          </div>
-          <div class="paper-actions">
-            <a class="button primary" href="assets/2605.08733v1.pdf">Download PDF</a>
-            <a class="button secondary" href="https://arxiv.org/abs/2605.08733">View on arXiv</a>
-            <a class="button secondary" href="https://github.com/skypitcher/soft_gac_jax">GitHub</a>
+      <section id="method" class="section page-width">
+        <div class="section-lede">
+          <h2>A soft objective for expressive implicit actors.</h2>
+          <div class="lede-copy">
+          <p>Start with noise. A sequence of lightweight stochastic layers—the <strong>bridge</strong>—transforms it into an action. Together, these Gaussian layers express rich action distributions and expose <strong>analytical local costs</strong> against a broad reference process. Learning steers the paths toward high-value actions while controlling these costs, without estimating action entropy.</p>
           </div>
         </div>
-        <div class="bibtex-panel reveal">
-          <div class="bibtex-head">
-            <div>
-              <span>Citation</span>
-              <h3>BibTeX</h3>
+        <figure class="research-figure bridge-figure">
+          <div class="figure-viewport" tabindex="0" role="region" aria-label="Bridge overview; scroll horizontally on small screens">
+            <a href="assets/figures/softgac_bridge_overview.svg" target="_blank" rel="noopener" aria-label="Open bridge overview at full resolution">
+              <img src="assets/figures/softgac_bridge_overview.svg" alt="Actor paths move toward high-value action modes while reference paths remain broad. Local KL costs compare the actor and reference transitions along the sampled path." width="847" height="226" loading="lazy">
+            </a>
+          </div>
+          <figcaption><strong>Regularize the path, not just the endpoint.</strong> The critic scores the action; local KL costs shape how it is generated. Columns show internal bridge layers, not repeated network calls. <span class="figure-hint">Select to enlarge.</span></figcaption>
+        </figure>
+        <div class="method-note">
+          <p>The resulting path-space soft objective guides <strong>both actor and critic updates</strong>. With unrestricted path laws and a uniform reference action marginal, its optimum recovers SAC’s Boltzmann policy: the extra regularization shapes how actions are generated while preserving the ideal MaxEnt action distribution. <a href="assets/neurips_2026.pdf#page=4">The SAC connection →</a></p>
+        </div>
+      </section>
+
+      <section id="cost" class="section page-width">
+        <div class="cost-lede">
+          <h2>A <em>faster</em> actor could have been<br class="editorial-break"> <em class="better-word">stronger</em> all along.</h2>
+          <p>Within a <strong>comparable total actor parameter budget</strong>, SoftGAC replaces repeated calls to a shared sampler with lightweight, step-specific layers inside one network. Each action requires <strong>one network evaluation</strong>. The aim is lower training and deployment costs together with higher returns—not a larger model or a weaker policy.</p>
+        </div>
+        <figure class="computation-figure actor-animation-figure" id="actor-comparison">
+          <iframe class="actor-animation" src="assets/figures/actor-comparison-animated.svg?v=editorial-color"
+            title="Animated comparison: repeated shared-network evaluations versus one structured SoftGAC actor evaluation"
+            width="1040" height="414" loading="lazy" sandbox="allow-scripts" aria-describedby="actor-comparison-caption"></iframe>
+          <div class="animation-controls">
+            <span class="animation-note">Illustrative motion, not measured timing.</span>
+            <div class="animation-actions">
+              <button type="button" class="animation-button" data-animation-toggle disabled>Pause animation</button>
+              <button type="button" class="animation-button" data-animation-replay disabled>Replay</button>
+              <a href="assets/figures/actor-comparison-animated.svg" target="_blank" rel="noopener">Open SVG</a>
             </div>
-            <button class="button secondary copy-bibtex" type="button" data-copy-target="softgac-bibtex">
-              Copy BibTeX
-            </button>
           </div>
-          <pre><code id="softgac-bibtex">@article{he2026generative,
-  title         = {Generative Actor-Critic with Soft Bridge Policies},
-  author        = {He, Ke and He, Le and Tang, Shunpu and Wang, Yafei and Fan, Lisheng},
-  journal       = {arXiv preprint arXiv:2605.08733},
-  year          = {2026},
-  archivePrefix = {arXiv},
-  eprint        = {2605.08733},
-  url           = {https://arxiv.org/abs/2605.08733}
-}</code></pre>
+          <figcaption id="actor-comparison-caption"><strong>One network evaluation per action, at a comparable total actor budget.</strong> \(K=6\) is internal depth, not six evaluations of the full network. Reference transitions supply local training costs, not an extra deployment rollout.</figcaption>
+        </figure>
+        <div class="inference-comparison" id="inference">
+          <div class="inference-intro">
+          <h3 id="inference-title">Inference time at comparable actor budgets.</h3>
+          <p>SoftGAC stays close to FLAC and FlowRL in latency, and is about <strong>5–10× faster</strong> than DIME, QSM, and QVPO across the three domains below.</p>
+          </div>
+          <div class="inference-data">
+          <div class="inference-table-wrap" role="region" aria-labelledby="inference-title" tabindex="0">
+            <!-- Camera-ready Figure 3: time in microseconds; total actor parameters in thousands. -->
+            <table class="inference-table" aria-describedby="inference-note">
+              <caption>Latency (µs); total params in parentheses.</caption>
+              <thead>
+                <tr><th scope="col">Actor</th><th scope="col">DMC Humanoid</th><th scope="col">DMC Dog</th><th scope="col">HumanoidBench</th></tr>
+              </thead>
+              <tbody>
+                <tr class="our-actor"><th scope="row">SoftGAC</th><td>61 <span>(410K)</span></td><td>75 <span>(526K)</span></td><td>63 <span>(342K)</span></td></tr>
+                <tr><th scope="row">FLAC</th><td>55 <span>(322K)</span></td><td>61 <span>(419K)</span></td><td>55 <span>(311K)</span></td></tr>
+                <tr><th scope="row">DIME</th><td>385 <span>(423K)</span></td><td>393 <span>(471K)</span></td><td>387 <span>(418K)</span></td></tr>
+                <tr><th scope="row">FlowRL</th><td>55 <span>(322K)</span></td><td>61 <span>(419K)</span></td><td>55 <span>(311K)</span></td></tr>
+                <tr><th scope="row">QSM</th><td>614 <span>(183K)</span></td><td>712 <span>(188K)</span></td><td>604 <span>(184K)</span></td></tr>
+                <tr><th scope="row">QVPO</th><td>373 <span>(369K)</span></td><td>387 <span>(466K)</span></td><td>376 <span>(358K)</span></td></tr>
+                <tr><th scope="row">CrossQ-SAC</th><td>31 <span>(321K)</span></td><td>37 <span>(419K)</span></td><td>31 <span>(311K)</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="inference-swipe">Swipe to compare all three domains.</p>
+          <p class="inference-note" id="inference-note">Apple M3 Pro CPU; compilation excluded. SoftGAC uses its deterministic mean path at evaluation, bypassing variance heads and regularization costs. <a href="assets/neurips_2026.pdf#page=8">Paper, Fig. 3 →</a></p>
+          </div>
         </div>
+      </section>
+
+      <section id="evidence" class="section page-width">
+        <div class="section-lede">
+          <h2>Not just faster.<br> <em>Stronger</em> where it matters.</h2>
+          <div class="lede-copy">
+          <p>Across <strong>12 control tasks</strong>, SoftGAC remains competitive on easier problems and achieves substantially higher returns on difficult locomotion and obstacle tasks. Comparisons use comparable total actor parameter budgets and the same main critic update.</p>
+          </div>
+        </div>
+        <figure class="research-figure results-figure">
+          <div class="figure-viewport" tabindex="0" role="region" aria-label="All 12 task learning curves; scroll horizontally on small screens">
+            <a href="assets/figures/iqm_learning_curves_all12.svg" target="_blank" rel="noopener" aria-label="Open all 12 task learning curves at full resolution"><img src="assets/figures/iqm_learning_curves_all12.svg" alt="Learning curves for all twelve tasks comparing SoftGAC, FLAC, DIME, FlowRL, QSM, QVPO, and CrossQ-SAC. SoftGAC has particularly strong results on H1 Hurdle and H1 Stair." width="985" height="612" loading="lazy"></a>
+          </div>
+          <figcaption><strong>The full 12-task benchmark.</strong> Interquartile mean returns and 95% bootstrap confidence intervals across eight seeds. <span class="figure-hint">Select to enlarge.</span></figcaption>
+        </figure>
+      </section>
+
+      <section id="paper" class="section citation-section page-width">
+        <div class="citation-heading"><h2>Citation</h2><button class="button copy-bibtex" type="button" data-copy-target="softgac-bibtex">Copy BibTeX</button></div>
+        <p class="citation-intro">For theory and full experiments, read the <a href="assets/neurips_2026.pdf">paper</a>. For implementation, explore the <a href="https://github.com/skypitcher/soft_gac_jax">JAX code</a>.</p>
+        <pre><code id="softgac-bibtex">@inproceedings{he2026generative,
+  title     = {Generative Actor-Critic with Soft Bridge Policies},
+  author    = {He, Ke and He, Le and Tang, Shunpu and Wang, Yafei and Fan, Lisheng},
+  booktitle = {Advances in Neural Information Processing Systems ({NeurIPS})},
+  year      = {2026},
+  url       = {https://arxiv.org/abs/2605.08733}
+}</code></pre>
+        <span id="copy-status" class="sr-only" role="status" aria-live="polite"></span>
       </section>
     </main>
-
-    <footer class="footer">
-      <span>SoftGAC</span>
-      <span>Expressive, soft, cheap, and better generative actors.</span>
-    </footer>
-
-    <script src="script.js?v=20260624a"></script>
+    <footer class="footer page-width"><p>SoftGAC · NeurIPS 2026</p><p>Expressive, soft, cheap, and better.</p></footer>
+    <script src="script.js?v=20261014-editorial"></script>
   </body>
 </html>

@@ -5,12 +5,12 @@
 >
   <url>
     <loc>https://skypitcher.github.io/soft_gac_home/</loc>
-    <lastmod>2026-06-28</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://skypitcher.github.io/soft_gac_home/assets/figures/blockbox_vs_whitebox_twocolumn.png</image:loc>
-      <image:title>Diffusion and flow policy actor versus SoftGAC bridge actor</image:title>
+      <image:loc>https://skypitcher.github.io/soft_gac_home/assets/figures/softgac_bridge_preview.png</image:loc>
+      <image:title>SoftGAC soft bridge policy: actor, reference, and local KL costs</image:title>
     </image:image>
   </url>
 </urlset>

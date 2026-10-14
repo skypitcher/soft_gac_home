@@ -1,0 +1,27 @@
+/* Manuscript linework, embedded into the standalone SVG at build time. */
+:root { color-scheme: light; }
+svg { display: block; width: 100%; height: 100%; background: #fffdf8; }
+text { font-family: Arial, Helvetica, sans-serif; fill: #18231f; }
+.heading { font-family: Georgia, "Times New Roman", serif; font-size: 27px; font-weight: 400; letter-spacing: -.6px; }
+.subheading { font-size: 15px; fill: #5f6b64; }
+.note { font-size: 14px; fill: #5f6b64; }
+.math { fill: currentColor; stroke: currentColor; stroke-width: 0; }
+.port-label { font-size: 13px; fill: #5f6b64; text-anchor: middle; }
+.call-label { font-family: "Courier New", monospace; font-size: 15px; fill: #5f6b64; text-anchor: middle; }
+.call-step { font-family: Georgia, serif; font-size: 20px; fill: #526781; text-anchor: middle; }
+.rail { fill: none; stroke: #8193a8; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.loop-rail { fill: none; stroke: #526781; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.bridge-rail { fill: none; stroke: #258c6e; stroke-width: 1.5; stroke-linecap: round; }
+.trace { fill: none; stroke: #00865f; stroke-width: 1; opacity: .25; }
+.kl-line { fill: none; stroke: #c4432b; stroke-width: 1.2; }
+.kl-label { font-size: 14px; fill: #c4432b; }
+.reference-label { font-size: 14px; fill: #c4432b; }
+[data-layout="mobile"] .heading { font-size: 31px; }
+[data-layout="mobile"] .subheading { font-size: 20px; }
+[data-layout="mobile"] .note { font-size: 19px; }
+[data-layout="mobile"] .port-label { font-size: 18px; }
+[data-layout="mobile"] .call-label { font-size: 20px; }
+[data-layout="mobile"] .call-step { font-size: 24px; }
+[data-layout="mobile"] .reference-label { font-size: 18px; }
+[data-layout="mobile"] .kl-label { font-size: 20px; }
+[data-particle], [data-halo], [data-ready-ring] { pointer-events: none; }
