@@ -22,7 +22,7 @@ The page follows the same story as the NeurIPS poster and the overview video, an
 
 1. **Hero:** an animated soft bridge. A broad base z₀ ∼ q_ref takes K = 6 stochastic Gaussian hops onto three value modes, while a faint reference process stays broad. Particles pause and jump layer by layer: a discrete stochastic bridge, not a smooth flow.
 2. **Overview:** one-sentence summary and the three claims, **Soft · Fast · Better**.
-3. **Video:** the narrated 4-minute overview (English, subtitles burned in).
+3. **Video:** the narrated overview (4:50, English, subtitles burned in).
 4. **Why generative policies?** An interactive obstacle example (sample from a Gaussian or a multimodal policy). Illustration only; the collision rates are integrated from the plotted densities.
 5. **Two problems:** cost vs. performance, and intractable entropy for any implicit generator (approximations are inexact, surrogates are indirect).
 6. **Method:** the bridge (each layer is a Gaussian transition, ≈ M/K params; the reference has no parameters), the parameter-budget comparison, Eq. 24 and Lemma 1, and the drop-in actor-critic updates.
