@@ -35,7 +35,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-    <link rel="stylesheet" href="styles.css?v=20261028e">
+    <link rel="stylesheet" href="styles.css?v=20261028g">
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -157,7 +157,7 @@
               <span class="why-stat" id="why-stat" aria-live="polite"></span>
             </div>
             <svg id="why-svg" viewBox="0 0 1000 520" role="img" aria-label="A robot facing an obstacle, sampled trajectories from the chosen policy, and the action densities of a Gaussian and a multimodal policy"></svg>
-            <figcaption>Illustration, not an experiment. Steering <span class="m">a</span> ∈ [−1, 1]; |<span class="m">a</span>| &lt; 0.5 hits the obstacle. The collision rates are integrated from the plotted densities: Gaussian 𝒩(0, 0.5²) vs. the mixture ½𝒩(±0.72, 0.1²).</figcaption>
+            <figcaption>Illustration, not an experiment. Steering \(a\in[-1,1]\); \(|a|<0.5\) hits the obstacle. The collision rates are integrated from the plotted densities: Gaussian \(\mathcal N(0,\,0.5^2)\) vs. the mixture \(\tfrac12\,\mathcal N(\pm0.72,\,0.1^2)\).</figcaption>
           </figure>
         </div>
       </section>
@@ -173,17 +173,13 @@
             <article class="card problem">
               <div class="p-badge">1</div>
               <h3>Cost vs. performance</h3>
-              <p>Many-step diffusion and flow policies are strong, but they call <b>the same network</b> (<span class="m">M</span> params) <span class="m">N</span> times for every action, and training backpropagates through all <span class="m">N</span> calls. One-step generators are fast and cheap, but their <b>returns usually drop</b>.</p>
-              <svg class="mini" viewBox="0 0 520 190" role="img" aria-label="A many-step actor reuses one network N times; a one-step generator calls it once">
+              <p>Many-step diffusion and flow policies are strong, but they call <b>the same network</b> (\(M\) params) \(N\) times for every action, and training backpropagates through all \(N\) calls. One-step generators are fast and cheap, but their <b>returns usually drop</b>.</p>
+              <svg class="mini" id="mini-svg" viewBox="0 0 520 190" role="img" aria-label="A many-step actor reuses one network N times; a one-step generator calls it once">
                 <text x="0" y="22" class="ml">many-step</text>
                 <g class="mbox red"><rect x="0" y="34" width="62" height="44" rx="8"/><rect x="82" y="34" width="62" height="44" rx="8"/><rect x="164" y="34" width="62" height="44" rx="8"/><rect x="276" y="34" width="62" height="44" rx="8"/></g>
-                <g class="mtext"><text x="31" y="62">f<tspan dy="5" font-size="12">θ</tspan></text><text x="113" y="62">f<tspan dy="5" font-size="12">θ</tspan></text><text x="195" y="62">f<tspan dy="5" font-size="12">θ</tspan></text><text x="251" y="62">⋯</text><text x="307" y="62">f<tspan dy="5" font-size="12">θ</tspan></text></g>
-                <text x="360" y="62" class="mnote">× N calls</text>
-                <path d="M300,96 H20" class="bptt"/><text x="160" y="116" class="mbptt">∇Q through all N calls</text>
+                <path d="M300,96 H20" class="bptt"/>
                 <text x="0" y="146" class="ml">one-step</text>
                 <rect x="0" y="154" width="338" height="34" rx="8" class="mbox dark"/>
-                <text x="169" y="176" class="mtext light">f<tspan dy="5" font-size="12">θ</tspan><tspan dy="-5"> · M params</tspan></text>
-                <text x="360" y="176" class="mnote">× 1 call · weaker</text>
               </svg>
             </article>
             <article class="card problem">
@@ -208,7 +204,7 @@
           <div class="sec-head">
             <p class="eyebrow">Method</p>
             <h2>Open the box: a soft bridge</h2>
-            <p class="sub">SoftGAC is also a one-step generator: <b>about the same number of parameters</b>, and <b>one network call</b>. Inside, the parameter budget is split into <span class="m">K</span> small <b>Gaussian transition</b> layers (≈ <span class="m">M/K</span> params each), each used once. Each layer is paired with one step of a fixed maximum-entropy reference process that has no parameters.</p>
+            <p class="sub">SoftGAC is also a one-step generator: <b>about the same number of parameters</b>, and <b>one network call</b>. Inside, the parameter budget is split into \(K\) small <b>Gaussian transition</b> layers (\(\approx M/K\) params each), each used once. Each layer is paired with one step of a fixed maximum-entropy reference process that has no parameters.</p>
           </div>
           <figure class="card bridge-card">
             <svg id="bridge-svg" viewBox="0 0 1000 400" role="img" aria-label="The soft bridge actor: K Gaussian transitions inside one network, each paired with a reference step; the local KL terms add up to the control energy"></svg>
@@ -277,7 +273,7 @@
           <figure class="card boltz-card">
             <svg id="boltz-svg" viewBox="0 0 900 300" role="img" aria-label="At a fixed temperature, the critic tilts a uniform prior into the Boltzmann policy, keeping every good mode"></svg>
             <div class="boltz-ctl">
-              <label for="tilt">Value tilt <span class="m">λ</span></label>
+              <label for="tilt">Value tilt \(\lambda\)</label>
               <input type="range" id="tilt" min="0" max="1" step="0.01" value="1">
               <span id="tilt-text"></span>
             </div>
@@ -407,7 +403,7 @@
             <div class="card">
               <h3 class="chart-title">Genuinely multimodal</h3>
               <p class="big-num">53.8%</p>
-              <p class="small muted">of H1 Hurdle states have multimodal SoftGAC actions (Hartigan's Dip test), vs. 0.0% for CrossQ-SAC (Table 5). Robust to the base, the bridge depth (<span class="m">K</span> = 4–8) and the critic backend (XQC).</p>
+              <p class="small muted">of H1 Hurdle states have multimodal SoftGAC actions (Hartigan's Dip test), vs. 0.0% for CrossQ-SAC (Table 5). Robust to the base, the bridge depth (\(K=4\)–\(8\)) and the critic backend (XQC).</p>
             </div>
           </div>
         </div>
@@ -441,6 +437,6 @@
 
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
-    <script defer src="script.js?v=20261028e"></script>
+    <script defer src="script.js?v=20261028g"></script>
   </body>
 </html>

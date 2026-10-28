@@ -90,6 +90,12 @@ h4:first-child { margin-top: 0; }
 .card p { margin: 0 0 10px; }
 .card p:last-child { margin-bottom: 0; }
 
+/* ---------- math labels over SVG diagrams (KaTeX, positioned in viewBox units) ---------- */
+.svgwrap { position: relative; container-type: inline-size; }
+.svgwrap > svg { width: 100%; height: auto; display: block; }
+.lbl { position: absolute; white-space: nowrap; pointer-events: none; line-height: 1.15; font-family: Inter, system-ui, sans-serif; }
+.lbl .katex { font-size: 1.1em; }
+
 /* ---------- overview ---------- */
 .lead { font-size: clamp(20px, 2.2vw, 26px); line-height: 1.5; font-weight: 500; color: var(--ink-2); max-width: 980px; margin: 0 0 36px; }
 .lead b { color: var(--blue); }
@@ -129,7 +135,8 @@ figcaption { font-size: 14px; color: var(--muted); margin-top: 10px; line-height
 .problem { position: relative; padding-top: 30px; }
 .p-badge { width: 52px; height: 52px; border-radius: 50%; background: var(--orange); color: #fff; display: grid; place-items: center; font-weight: 900; font-size: 26px; margin-bottom: 12px; }
 .problem p { color: var(--ink-2); }
-.mini { width: 100%; height: auto; margin-top: 16px; }
+.problem .svgwrap { margin-top: 16px; }
+.mini { width: 100%; height: auto; }
 .mini .ml { font-size: 14px; font-weight: 800; fill: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
 .mini .mbox.red rect { fill: #fdecea; stroke: var(--red); stroke-width: 2; }
 .mini .mbox.dark { fill: #232a3b; }

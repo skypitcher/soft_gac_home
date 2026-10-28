@@ -25,6 +25,42 @@
     }
   }
 
+  /* Text with \( ... \) math, rendered by KaTeX; the rest stays plain HTML. */
+  const mixed = str => str.replace(/\\\((.+?)\\\)/g, (m, tex) =>
+    window.katex ? window.katex.renderToString(tex, { throwOnError: false }) : tex);
+
+  /* Math labels over an SVG diagram, as HTML positioned in viewBox units. KaTeX inside SVG
+     <foreignObject> is mis-positioned in Safari, so labels sit in an overlay instead; their size
+     follows the diagram width through container-query units. Each item: {x, y, html, size,
+     anchor: "start" | "middle" | "end", color, weight}, with (x, y) the label's left/center/right
+     edge and vertical center. */
+  function overlay(svg, items) {
+    const vb = svg.viewBox.baseVal, VW = vb.width, VH = vb.height;
+    let wrap = svg.parentElement;
+    if (!wrap.classList.contains("svgwrap")) {
+      wrap = document.createElement("div");
+      wrap.className = "svgwrap";
+      svg.replaceWith(wrap);
+      wrap.appendChild(svg);
+    }
+    wrap.querySelectorAll(":scope > .lbl").forEach(e => e.remove());
+    const shift = { start: 0, middle: -50, end: -100 };
+    return items.map(({ x, y, html, size = 16, anchor = "middle", color, weight }) => {
+      const el = document.createElement("span");
+      el.className = "lbl";
+      el.style.left = (100 * x / VW) + "%";
+      el.style.top = (100 * y / VH) + "%";
+      el.style.fontSize = size + "px";                       // fallback without container queries
+      el.style.fontSize = (100 * size / VW).toFixed(3) + "cqw";
+      el.style.transform = `translate(${shift[anchor]}%, -50%)`;
+      if (color) el.style.color = color;
+      if (weight) el.style.fontWeight = weight;
+      el.innerHTML = mixed(html);
+      wrap.appendChild(el);
+      return el;
+    });
+  }
+
   /* ---------------- hero: the soft bridge as particles ----------------
      A broad base z0 ~ q_ref (tanh(z0) uniform), K stochastic Gaussian hops guided onto three
      value modes; the reference process (faint orange) stays broad. Particles pause and jump
@@ -164,18 +200,20 @@
       <text x="${B.cx + 30}" y="476" font-size="17" font-weight="700" fill="#3b4459">robot</text>
       <rect x="${PX(-B.thr)}" y="24" width="${PX(B.thr) - PX(-B.thr)}" height="420" fill="#c2362f" fill-opacity="0.07"/>
       <text x="${PX(0)}" y="196" text-anchor="middle" font-size="15" font-weight="800" fill="#c2362f">hits the obstacle</text>
-      <text x="545" y="40" font-size="15" font-weight="700" fill="#c35a0e">critic Q(s, a)</text>
       <line x1="545" y1="140" x2="975" y2="140" stroke="#e3e1d9"/>
       <path d="${curve(Q, 140, 80)}" fill="none" stroke="#e2701b" stroke-width="3"/>
       <text x="545" y="222" font-size="15" font-weight="700" fill="#3b4459">policy density</text>
       <path id="why-pg" d="${curve(dens.gauss, 440, 210 / 2.2)}L${PX(1)},440L${PX(-1)},440Z" fill="#6b7489" fill-opacity="0.16" stroke="#6b7489" stroke-width="2.5"/>
       <path id="why-pm" d="${curve(dens.multi, 440, 210 / 2.2)}L${PX(1)},440L${PX(-1)},440Z" fill="#0a5cc2" fill-opacity="0.2" stroke="#0a5cc2" stroke-width="3"/>
       <line x1="545" y1="440" x2="975" y2="440" stroke="#3b4459" stroke-width="2"/>
-      <text x="545" y="464" font-size="14" fill="#6b7489">go left (a = −1)</text>
       <text x="${PX(0)}" y="464" text-anchor="middle" font-size="14" fill="#6b7489">straight</text>
-      <text x="975" y="464" text-anchor="end" font-size="14" fill="#6b7489">go right (a = +1)</text>
       <rect x="545" y="482" width="20" height="6" fill="#6b7489"/><text x="573" y="489" font-size="14" fill="#3b4459"><tspan font-weight="700">Gaussian</tspan> · one peak · ${expected.gauss}% hit</text>
       <rect x="545" y="504" width="20" height="6" fill="#0a5cc2"/><text x="573" y="511" font-size="14" fill="#3b4459"><tspan font-weight="700" fill="#0a5cc2">Generative</tspan> · two peaks · ${expected.multi}% hit</text>`;
+    overlay(svg, [
+      { x: 545, y: 34, html: String.raw`critic \(Q(s,a)\)`, size: 15, anchor: "start", color: "#c35a0e", weight: 700 },
+      { x: 545, y: 459, html: String.raw`go left \((a=-1)\)`, size: 14, anchor: "start", color: "#6b7489" },
+      { x: 975, y: 459, html: String.raw`go right \((a=+1)\)`, size: 14, anchor: "end", color: "#6b7489" },
+    ]);
     const trajs = svg.querySelector("#why-trajs");
     const stat = document.getElementById("why-stat");
     let policy = "multi", seed = 11;
@@ -224,53 +262,60 @@
   function bridgeFigure() {
     const svg = document.getElementById("bridge-svg");
     if (!svg) return;
-    const mi = (v, sub, sz = 15) => `<tspan font-style="italic" font-family="KaTeX_Math, Times New Roman, serif">${v}</tspan>` + (sub ? `<tspan font-style="italic" font-family="KaTeX_Math, Times New Roman, serif" font-size="${sz}" dy="5">${sub}</tspan><tspan dy="-5"></tspan>` : "");
+    const LX = [100, 310, 630], SUB = ["0", "1", "K-1"];
     const bell = cx => `<path d="M${cx + 12},105 C${cx + 22},105 ${cx + 26},74 ${cx + 34},74 C${cx + 42},74 ${cx + 46},105 ${cx + 56},105" fill="rgba(10,92,194,0.12)" stroke="#0a5cc2" stroke-width="2.5"/>`;
-    const layer = (x, sub) => `<rect class="qb" x="${x}" y="60" width="120" height="80" rx="10" fill="#e8f0fb" stroke="#0a5cc2" stroke-width="2.5"/>
-      <text x="${x + 40}" y="97" text-anchor="middle" font-size="24" fill="#0a5cc2">${mi("q", sub, 15)}</text>${bell(x + 60)}
-      <text x="${x + 60}" y="127" text-anchor="middle" font-size="15" fill="#3b4459">≈ M/K params</text>`;
-    const refb = (x, sub) => `<rect x="${x}" y="205" width="120" height="70" rx="10" fill="#fdf0e4" stroke="#e2701b" stroke-width="2.5"/>
-      <text x="${x + 60}" y="238" text-anchor="middle" font-size="24" fill="#c35a0e">${mi("r", sub, 15)}</text>
-      <text x="${x + 60}" y="264" text-anchor="middle" font-size="15" fill="#3b4459">no params</text>`;
-    const node = (x, label, sub) => `<circle cx="${x}" cy="100" r="25" fill="#fff" stroke="#12182b" stroke-width="2.5"/><text x="${x}" y="107" text-anchor="middle" font-size="22">${mi(label, sub, 13)}</text>`;
-    const kl = x => `<line x1="${x}" y1="140" x2="${x}" y2="205" stroke="#12182b" stroke-width="2" stroke-dasharray="5 5"/><rect class="klb" x="${x - 34}" y="157" width="68" height="31" rx="7" fill="#fff" stroke="#12182b" stroke-width="2"/><text x="${x}" y="179" text-anchor="middle" font-size="17" font-weight="800">KL</text>`;
+    const layer = x => `<rect class="qb" x="${x}" y="60" width="120" height="80" rx="10" fill="#e8f0fb" stroke="#0a5cc2" stroke-width="2.5"/>${bell(x + 60)}`;
+    const refb = x => `<rect x="${x}" y="205" width="120" height="70" rx="10" fill="#fdf0e4" stroke="#e2701b" stroke-width="2.5"/>`;
+    const node = x => `<circle cx="${x}" cy="100" r="25" fill="#fff" stroke="#12182b" stroke-width="2.5"/>`;
+    const kl = x => `<line x1="${x}" y1="140" x2="${x}" y2="205" stroke="#12182b" stroke-width="2" stroke-dasharray="5 5"/><rect class="klb" x="${x - 34}" y="157" width="68" height="31" rx="7" fill="#fff" stroke="#12182b" stroke-width="2"/>`;
+    const NX = [45, 265, 475, 585, 800, 935];
     svg.innerHTML = `
       <defs>
         <marker id="bh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#0a5cc2"/></marker>
         <marker id="kh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#3b4459"/></marker>
         <marker id="oh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#e2701b"/></marker>
       </defs>
-      <text x="0" y="29" font-size="18" fill="#6b7489">state ${mi("s")}</text>
       <line x1="80" y1="22" x2="700" y2="22" stroke="#6b7489" stroke-width="2"/>
       <g stroke="#6b7489" stroke-width="2" marker-end="url(#kh)"><line x1="160" y1="22" x2="160" y2="56"/><line x1="370" y1="22" x2="370" y2="56"/><line x1="690" y1="22" x2="690" y2="56"/></g>
       <rect x="88" y="46" width="676" height="106" rx="14" fill="none" stroke="#0a5cc2" stroke-width="2.5" stroke-dasharray="10 7"/>
-      ${layer(100, "θ,0")}${layer(310, "θ,1")}${layer(630, "θ,K−1")}
-      ${node(45, "z", "0")}${node(265, "z", "1")}${node(475, "z", "2")}${node(585, "z", "K−1")}${node(800, "z", "K")}
-      <text x="530" y="108" text-anchor="middle" font-size="26">⋯</text>
-      <circle cx="935" cy="100" r="25" fill="#fff" stroke="#12182b" stroke-width="2.5"/><text x="935" y="108" text-anchor="middle" font-size="24">${mi("a")}</text>
-      <text x="866" y="88" text-anchor="middle" font-size="17" fill="#0a5cc2">tanh</text><text x="935" y="148" text-anchor="middle" font-size="15" fill="#6b7489">action</text>
+      ${LX.map(layer).join("")}${NX.map(node).join("")}
       <g stroke="#0a5cc2" stroke-width="2.5" marker-end="url(#bh)"><line x1="70" y1="100" x2="97" y2="100"/><line x1="220" y1="100" x2="237" y2="100"/><line x1="290" y1="100" x2="307" y2="100"/><line x1="430" y1="100" x2="447" y2="100"/><line x1="610" y1="100" x2="627" y2="100"/><line x1="750" y1="100" x2="772" y2="100"/><line x1="825" y1="100" x2="907" y2="100"/></g>
-      ${refb(100, "0")}${refb(310, "1")}${refb(630, "K−1")}
+      ${LX.map(refb).join("")}
       <g fill="none" stroke="#e2701b" stroke-width="2" marker-end="url(#oh)"><path d="M45,125 V240 H97"/><path d="M265,125 V240 H307"/><path d="M585,125 V240 H627"/></g>
-      <text x="780" y="230" font-size="17" font-weight="800" fill="#c35a0e">reference process ${mi("R")}</text>
-      <text x="780" y="252" font-size="14" fill="#c35a0e">max-entropy action prior</text>
-      <text x="780" y="272" font-size="14" fill="#c35a0e">fixed · no parameters</text>
-      ${kl(160)}${kl(370)}${kl(690)}
+      ${[160, 370, 690].map(kl).join("")}
       <g stroke="#3b4459" stroke-width="2" marker-end="url(#kh)"><line x1="160" y1="275" x2="160" y2="318"/><line x1="370" y1="275" x2="370" y2="318"/><line x1="690" y1="275" x2="690" y2="318"/></g>
       <rect x="100" y="322" width="650" height="58" rx="10" fill="#0d1b36"/>
-      <text x="425" y="358" text-anchor="middle" font-size="20" fill="#fff" font-weight="600">${mi("𝒞", "θ")}(${mi("s, τ")}) = Σ<tspan font-size="13" dy="5">k</tspan><tspan dy="-5"> KL(</tspan>${mi("q", "θ,k", 13)} ‖ ${mi("r", "k", 13)}) = exact path KL</text>
       <line x1="750" y1="351" x2="782" y2="351" stroke="#3b4459" stroke-width="2.5" marker-end="url(#kh)"/>
-      <text x="790" y="345" font-size="15" fill="#12182b">replaces entropy in</text><text x="790" y="366" font-size="15" fill="#12182b">actor &amp; critic target</text>
       <g id="hop"><circle r="16" fill="#ffb27a" opacity="0.45"/><circle r="9" fill="#e2701b" stroke="#fff" stroke-width="3"/></g>`;
+    const T = String.raw;
+    overlay(svg, [
+      { x: 0, y: 24, html: T`state \(s\)`, size: 18, anchor: "start", color: "#6b7489" },
+      ...LX.map((x, k) => ({ x: x + 38, y: 89, html: `\\(q_{\\theta,${SUB[k]}}\\)`, size: 21, color: "#0a5cc2" })),
+      ...LX.map(x => ({ x: x + 60, y: 123, html: T`\(\approx M/K\) params`, size: 14, color: "#3b4459" })),
+      ...[["0", 45], ["1", 265], ["2", 475], ["K-1", 585], ["K", 800]].map(([sub, x]) => ({ x, y: 100, html: `\\(z_{${sub}}\\)`, size: 19 })),
+      { x: 935, y: 100, html: T`\(a\)`, size: 21 },
+      { x: 530, y: 98, html: T`\(\cdots\)`, size: 20 },
+      { x: 866, y: 84, html: T`\(\tanh\)`, size: 17, color: "#0a5cc2" },
+      { x: 935, y: 145, html: "action", size: 15, color: "#6b7489" },
+      ...LX.map((x, k) => ({ x: x + 60, y: 230, html: `\\(r_{${SUB[k]}}\\)`, size: 21, color: "#c35a0e" })),
+      ...LX.map(x => ({ x: x + 60, y: 260, html: "no params", size: 15, color: "#3b4459" })),
+      ...[160, 370, 690].map(x => ({ x, y: 172.5, html: T`\(\mathrm{KL}\)`, size: 16, weight: 800 })),
+      { x: 780, y: 226, html: T`reference process \(R\)`, size: 17, anchor: "start", color: "#c35a0e", weight: 800 },
+      { x: 780, y: 249, html: "max-entropy action prior", size: 14, anchor: "start", color: "#c35a0e" },
+      { x: 780, y: 269, html: "fixed · no parameters", size: 14, anchor: "start", color: "#c35a0e" },
+      { x: 425, y: 351, html: T`\(\mathcal C_\theta(s,\tau)=\sum_k \mathrm{KL}\big(q_{\theta,k}\,\|\,r_k\big)\) = exact path KL`, size: 19, color: "#fff", weight: 600 },
+      { x: 790, y: 341, html: "replaces entropy in", size: 15, anchor: "start" },
+      { x: 790, y: 362, html: "actor &amp; critic target", size: 15, anchor: "start" },
+    ]);
     const hop = svg.querySelector("#hop"), boxes = [...svg.querySelectorAll(".qb")], kls = [...svg.querySelectorAll(".klb")];
     const PX = [45, 160, 265, 370, 475, 530, 585, 690, 800, 935];
     if (reduceMotion) { hop.setAttribute("transform", "translate(45,100)"); return; }
     let visible = false;
     if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { const was = visible; visible = e.isIntersecting; if (visible && !was) requestAnimationFrame(tick); }).observe(svg);
-    const T = 5.2, t0 = performance.now();
+    const period = 5.2, t0 = performance.now();
     function tick(now) {
       if (!visible) return;
-      const t = ((now - t0) / 1000) % T, p = clamp(t / 3.6);
+      const t = ((now - t0) / 1000) % period, p = clamp(t / 3.6);
       const u = easeInOut(p) * (PX.length - 1), i = Math.min(PX.length - 2, Math.floor(u)), f = u - i;
       const x = lerp(PX[i], PX[i + 1], f);
       hop.setAttribute("transform", `translate(${x.toFixed(1)},100)`);
@@ -295,20 +340,26 @@
     const pMax = Math.max(...pol(1)) * 1.08;
     const YP = v => 270 - v / pMax * 140;
     svg.innerHTML = `
-      <text x="${L}" y="22" font-size="15" font-weight="700" fill="#c35a0e">critic Q(s, a)</text>
       <line x1="${L}" y1="100" x2="${R}" y2="100" stroke="#e3e1d9"/>
       <path d="${xs.map((a, i) => (i ? "L" : "M") + X(a).toFixed(1) + "," + (100 - qa(a) * 70).toFixed(1)).join("")}" fill="none" stroke="#e2701b" stroke-width="3"/>
-      <text x="${L}" y="126" font-size="15" font-weight="700" fill="#0a5cc2">policy density on actions a ∈ (−1, 1)</text>
       <line x1="${L}" x2="${R}" y1="${YP(0.5)}" y2="${YP(0.5)}" stroke="#6b7489" stroke-width="2" stroke-dasharray="8 6"/>
-      <text x="${R}" y="${YP(0.5) - 8}" text-anchor="end" font-size="13" fill="#6b7489">uniform prior u_R</text>
       <path id="bp" fill="rgba(10,92,194,0.25)" stroke="#0a5cc2" stroke-width="3"/>
       <line x1="${L}" x2="${R}" y1="270" y2="270" stroke="#3b4459" stroke-width="2"/>
-      <text x="${L}" y="292" font-size="13" fill="#6b7489">a = −1</text><text x="${R}" y="292" text-anchor="end" font-size="13" fill="#6b7489">a = +1</text>`;
+`;
+    overlay(svg, [
+      { x: L, y: 16, html: String.raw`critic \(Q(s,a)\)`, size: 15, anchor: "start", color: "#c35a0e", weight: 700 },
+      { x: L, y: 120, html: String.raw`policy density on actions \(a\in(-1,1)\)`, size: 15, anchor: "start", color: "#0a5cc2", weight: 700 },
+      { x: R, y: YP(0.5) - 14, html: String.raw`uniform prior \(u_R\)`, size: 13, anchor: "end", color: "#6b7489" },
+      { x: L, y: 287, html: String.raw`\(a=-1\)`, size: 13, anchor: "start", color: "#6b7489" },
+      { x: R, y: 287, html: String.raw`\(a=+1\)`, size: 13, anchor: "end", color: "#6b7489" },
+    ]);
     const bp = svg.querySelector("#bp");
     function draw() {
       const lam = parseFloat(slider.value), d = pol(lam);
       bp.setAttribute("d", `M${X(-1)},270` + xs.map((a, i) => "L" + X(a).toFixed(1) + "," + YP(d[i]).toFixed(1)).join("") + `L${X(1)},270Z`);
-      txt.textContent = lam < 0.03 ? "λ = 0: the uniform prior (maximum entropy)" : lam < 0.97 ? `λ = ${lam.toFixed(2)}: the value tilts the prior` : "λ = 1: π*, every good mode is kept";
+      txt.innerHTML = mixed(lam < 0.03 ? String.raw`\(\lambda=0\): the uniform prior (maximum entropy)`
+        : lam < 0.97 ? String.raw`\(\lambda=${lam.toFixed(2)}\): the value tilts the prior`
+        : String.raw`\(\lambda=1\): \(\pi^\star\), every good mode is kept`);
     }
     slider.addEventListener("input", draw);
     draw();
@@ -323,6 +374,21 @@
       }, { threshold: 0.5 });
       io.observe(svg);
     }
+  }
+
+  /* ---------------- problem 1: many calls vs. one call ---------------- */
+  function miniFigure() {
+    const svg = document.getElementById("mini-svg");
+    if (!svg) return;
+    const T = String.raw;
+    overlay(svg, [
+      ...[31, 113, 195, 307].map(x => ({ x, y: 56, html: T`\(f_\theta\)`, size: 19 })),
+      { x: 251, y: 56, html: T`\(\cdots\)`, size: 18 },
+      { x: 360, y: 56, html: T`\(\times\,N\) calls`, size: 14, anchor: "start", color: "#3b4459", weight: 600 },
+      { x: 160, y: 111, html: T`\(\nabla Q\) through all \(N\) calls`, size: 13, color: "#c2362f", weight: 600 },
+      { x: 169, y: 171, html: T`\(f_\theta\) · \(M\) params`, size: 17, color: "#fff" },
+      { x: 360, y: 171, html: T`\(\times\,1\) call · weaker`, size: 14, anchor: "start", color: "#3b4459", weight: 600 },
+    ]);
   }
 
   /* ---------------- results data (paper Fig. 3 latencies & params, Fig. 9 final IQMs) ---------------- */
@@ -389,8 +455,8 @@
       `<div class="tb-axis" aria-hidden="true"><span></span><span><i>0</i><i id="tb-max"></i></span><span></span></div>`;
     const rows = [...bars.querySelectorAll(".tb")];
     function show(i) {
-      // one shared axis from 0, rounded up to the next 100, so bar length is proportional to the value
-      const vals = METHODS.map(d => (i < 0 ? mean(d.iqm) : d.iqm[i])), axis = Math.ceil(Math.max(...vals) / 100) * 100;
+      // one fixed axis from 0 to 1000 (the DMC return scale), so bar length is proportional to the value
+      const vals = METHODS.map(d => (i < 0 ? mean(d.iqm) : d.iqm[i])), axis = 1000;
       rows.forEach((r, k) => { r.querySelector(".fill").style.width = (100 * vals[k] / axis) + "%"; r.querySelector(".tv").textContent = fmt(vals[k]); });
       bars.querySelector("#tb-max").textContent = axis;
     }
@@ -425,7 +491,7 @@
 
   function init() {
     renderMath();
-    heroBridge(); whyFigure(); bridgeFigure(); boltzFigure(); scatter(); taskBars(); copyBibtex(); demos();
+    heroBridge(); whyFigure(); miniFigure(); bridgeFigure(); boltzFigure(); scatter(); taskBars(); copyBibtex(); demos();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();
