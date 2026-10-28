@@ -4,29 +4,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SoftGAC | Generative Actor-Critic with Soft Bridge Policies | NeurIPS 2026</title>
-    <meta
-      name="description"
-      content="SoftGAC for maximum entropy RL: analytical soft regularization, one network evaluation per action, and stronger returns with comparable total actor parameters."
-    >
+    <meta name="description" content="SoftGAC: a one-step generative actor with an exact, analytical soft regularizer. Principled MaxEnt (endpoint-equivalent to SAC), one network call per action, and stronger returns than many-step diffusion policies at a comparable parameter budget.">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="author" content="Ke He, Le He, Shunpu Tang, Yafei Wang, Lisheng Fan">
+    <meta name="theme-color" content="#0d1b36">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1b36'/%3E%3Cpath d='M10 40 L22 28 L34 36 L46 22' fill='none' stroke='%238cbcff' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='52' cy='18' r='7' fill='%23ffb27a'/%3E%3C/svg%3E">
     <link rel="canonical" href="https://skypitcher.github.io/soft_gac_home/">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="SoftGAC">
-    <meta property="og:title" content="SoftGAC: Generative Actor-Critic for Maximum Entropy RL">
-    <meta
-      property="og:description"
-      content="SoftGAC challenges two common compromises in generative RL: relying on entropy approximations for softness, and sacrificing performance for speed."
-    >
+    <meta property="og:title" content="SoftGAC: Generative Actor-Critic with Soft Bridge Policies (NeurIPS 2026)">
+    <meta property="og:description" content="One step outside, a soft bridge inside: a principled MaxEnt actor that beats many-step diffusion in a single network call.">
     <meta property="og:url" content="https://skypitcher.github.io/soft_gac_home/">
-    <meta property="og:image" content="https://skypitcher.github.io/soft_gac_home/assets/figures/softgac_bridge_preview.png">
+    <meta property="og:image" content="https://skypitcher.github.io/soft_gac_home/assets/og-softgac.jpg">
+    <meta property="og:video" content="https://skypitcher.github.io/soft_gac_home/assets/videos/softgac_overview_en.mp4">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="SoftGAC: Generative Actor-Critic for Maximum Entropy RL">
-    <meta
-      name="twitter:description"
-      content="Analytical soft regularization and one network evaluation per action: SoftGAC achieves stronger returns on challenging tasks with comparable total actor parameters."
-    >
-    <meta name="twitter:image" content="https://skypitcher.github.io/soft_gac_home/assets/figures/softgac_bridge_preview.png">
+    <meta name="twitter:title" content="SoftGAC: Generative Actor-Critic with Soft Bridge Policies">
+    <meta name="twitter:description" content="Soft, fast, and better: an exact path-KL soft regularizer, one network call per action, and +44% return over the strongest many-step actor.">
+    <meta name="twitter:image" content="https://skypitcher.github.io/soft_gac_home/assets/og-softgac.jpg">
     <meta name="citation_title" content="Generative Actor-Critic with Soft Bridge Policies">
     <meta name="citation_author" content="He, Ke">
     <meta name="citation_author" content="He, Le">
@@ -37,271 +31,416 @@
     <meta name="citation_conference_title" content="Advances in Neural Information Processing Systems">
     <meta name="citation_arxiv_id" content="2605.08733">
     <meta name="citation_pdf_url" content="https://skypitcher.github.io/soft_gac_home/assets/neurips_2026.pdf">
-    <link rel="preload" href="assets/fonts/newsreader-latin-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="assets/fonts/newsreader-latin-italic.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="styles.css?v=20261014-editorial-color">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+    <link rel="stylesheet" href="styles.css?v=20261028d">
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "ScholarlyArticle",
   "name": "Generative Actor-Critic with Soft Bridge Policies",
-  "headline": "SoftGAC: Generative Actor-Critic for Maximum Entropy RL",
+  "headline": "SoftGAC: Generative Actor-Critic with Soft Bridge Policies",
   "alternateName": "SoftGAC",
-  "description": "Soft generative actor-critic (SoftGAC) jointly designs the actor's stochastic structure and soft objective. Explicit internal paths enable analytical soft regularization without estimating action entropy. Each action requires one network evaluation, with stronger returns on challenging control tasks under a comparable total actor parameter budget.",
+  "description": "SoftGAC is a one-step generative actor whose internal Gaussian bridge layers make the maximum-entropy regularizer an exact, analytical path KL. It is endpoint-equivalent to SAC, needs one network call per action, and outperforms many-step diffusion and flow policies on hard locomotion tasks at a comparable actor parameter budget.",
   "url": "https://skypitcher.github.io/soft_gac_home/",
-  "image": "https://skypitcher.github.io/soft_gac_home/assets/figures/softgac_bridge_preview.png",
+  "image": "https://skypitcher.github.io/soft_gac_home/assets/og-softgac.jpg",
   "datePublished": "2026",
+  "dateModified": "2026-10-28",
   "inLanguage": "en",
-  "keywords": [
-    "SoftGAC",
-    "generative actor-critic",
-    "maximum entropy reinforcement learning",
-    "MaxEnt RL",
-    "diffusion policy",
-    "flow policy",
-    "flow matching policy",
-    "soft bridge policies",
-    "stochastic bridge",
-    "reinforcement learning"
-  ],
+  "keywords": ["SoftGAC", "generative actor-critic", "maximum entropy reinforcement learning", "MaxEnt RL", "soft actor-critic", "diffusion policy", "flow policy", "one-step generator", "soft bridge policies", "stochastic bridge", "reinforcement learning"],
   "author": [
-    {
-      "@type": "Person",
-      "name": "Ke He",
-      "affiliation": {
-        "@type": "Organization",
-        "name": "Guangzhou University"
-      }
-    },
-    {
-      "@type": "Person",
-      "name": "Le He",
-      "affiliation": {
-        "@type": "Organization",
-        "name": "Guangzhou University"
-      }
-    },
-    {
-      "@type": "Person",
-      "name": "Shunpu Tang",
-      "affiliation": {
-        "@type": "Organization",
-        "name": "Zhejiang University"
-      }
-    },
-    {
-      "@type": "Person",
-      "name": "Yafei Wang",
-      "affiliation": {
-        "@type": "Organization",
-        "name": "Southeast University"
-      }
-    },
-    {
-      "@type": "Person",
-      "name": "Lisheng Fan",
-      "affiliation": {
-        "@type": "Organization",
-        "name": "Guangzhou University"
-      }
-    }
+    {"@type": "Person", "name": "Ke He", "affiliation": {"@type": "Organization", "name": "Guangzhou University"}},
+    {"@type": "Person", "name": "Le He", "affiliation": {"@type": "Organization", "name": "Guangzhou University"}},
+    {"@type": "Person", "name": "Shunpu Tang", "affiliation": {"@type": "Organization", "name": "Zhejiang University"}},
+    {"@type": "Person", "name": "Yafei Wang", "affiliation": {"@type": "Organization", "name": "Southeast University"}},
+    {"@type": "Person", "name": "Lisheng Fan", "affiliation": {"@type": "Organization", "name": "Guangzhou University"}}
   ],
-  "sameAs": [
-    "https://arxiv.org/abs/2605.08733",
-    "https://github.com/skypitcher/soft_gac_jax"
-  ],
-  "encoding": {
-    "@type": "MediaObject",
-    "contentUrl": "https://skypitcher.github.io/soft_gac_home/assets/neurips_2026.pdf",
-    "encodingFormat": "application/pdf"
+  "sameAs": ["https://arxiv.org/abs/2605.08733", "https://github.com/skypitcher/soft_gac_jax"],
+  "encoding": {"@type": "MediaObject", "contentUrl": "https://skypitcher.github.io/soft_gac_home/assets/neurips_2026.pdf", "encodingFormat": "application/pdf"},
+  "video": {
+    "@type": "VideoObject",
+    "name": "SoftGAC in 4 minutes",
+    "description": "A narrated overview of Generative Actor-Critic with Soft Bridge Policies.",
+    "thumbnailUrl": "https://skypitcher.github.io/soft_gac_home/assets/videos/softgac_overview_poster.jpg",
+    "contentUrl": "https://skypitcher.github.io/soft_gac_home/assets/videos/softgac_overview_en.mp4",
+    "uploadDate": "2026-10-28",
+    "duration": "PT4M28S"
   },
-  "dateModified": "2026-10-14",
-  "isPartOf": {
-    "@type": "CreativeWork",
-    "name": "Advances in Neural Information Processing Systems (NeurIPS 2026)"
-  }
+  "isPartOf": {"@type": "CreativeWork", "name": "Advances in Neural Information Processing Systems (NeurIPS 2026)"}
 }
     </script>
-    <script>
-      window.MathJax = {
-        tex: {
-          inlineMath: [["\\(", "\\)"]],
-          displayMath: [["\\[", "\\]"]],
-          processEscapes: true
-        },
-        svg: {
-          fontCache: "global"
-        }
-      };
-    </script>
-    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   </head>
   <body>
-    <a class="skip-link" href="#trilemma">Skip to the research</a>
-    <main id="top">
-      <header class="hero page-width">
-        <p class="venue">NeurIPS 2026</p>
-        <div class="hero-top">
-          <div class="hero-title">
-            <h1><span class="title-first">Generative Actor-Critic</span>
-              <span class="title-second">with <em>Soft Bridge Policies</em></span></h1>
-          </div>
-          <div class="author-block">
+    <a class="skip-link" href="#overview">Skip to the overview</a>
+
+    <!-- ================= HERO ================= -->
+    <header class="hero" id="top">
+      <canvas id="bridge-canvas" aria-hidden="true"></canvas>
+      <div class="hero-inner wrap">
+        <p class="venue"><span class="pill">NeurIPS 2026</span></p>
+        <h1>Generative Actor-Critic with<br><span class="t-soft">Soft</span> <span class="t-bridge">Bridge</span> <span class="t-soft">Policies</span></h1>
+        <p class="tagline"><span class="t-soft">One step</span> outside, a <span class="t-bridge">soft bridge</span> inside.</p>
         <p class="authors">
-          <span>Ke He<sup>1</sup></span>
-          <span><a href="mailto:hele@e.gzhu.edu.cn">Le He<sup>1</sup></a></span>
-          <span>Shunpu Tang<sup>2</sup></span>
-          <span>Yafei Wang<sup>3</sup></span>
-          <span>Lisheng Fan<sup>1</sup></span>
+          <span>Ke He<sup>1</sup></span><span>Le He<sup>1</sup></span><span>Shunpu Tang<sup>2</sup></span><span>Yafei Wang<sup>3</sup></span><span>Lisheng Fan<sup>1</sup></span>
         </p>
-        <p class="affiliations">
-          <span><sup>1</sup> Guangzhou University</span>
-          <span><sup>2</sup> Zhejiang University</span>
-          <span><sup>3</sup> Southeast University</span>
-        </p>
-          </div>
-        <div class="resource-links" aria-label="Paper resources">
-          <a class="button primary" href="assets/neurips_2026.pdf">Paper</a>
-          <a class="button" href="https://arxiv.org/abs/2605.08733">arXiv</a>
-          <a class="button" href="https://github.com/skypitcher/soft_gac_jax">Code</a>
-          <a class="button" href="#paper">BibTeX</a>
-        </div>
-        </div>
-        <div class="hero-intro">
-        <p class="hero-question">
-          <span class="slogan-premise"><span class="expressive-word">Expressive</span>, <span class="soft-word">soft</span>, and <span class="cheap-word">cheap</span>—</span>
-          <span class="slogan-question">could a <em>faster</em> actor also be a <em class="better-word">stronger</em> one?</span>
-        </p>
-        <p class="hero-copy">
-          <strong>Soft generative actor-critic (SoftGAC)</strong> challenges two common compromises in generative RL:
-          relying on entropy approximations for softness, and sacrificing performance for speed.
-          By designing the actor’s stochastic structure and soft objective together, it makes soft regularization analytical
-          and generates each action with one network evaluation—outperforming strong iterative diffusion and flow policies
-          on challenging tasks under a comparable total actor parameter budget.
-        </p>
-        </div>
-      </header>
+        <p class="affils"><span><sup>1</sup>Guangzhou University</span><span><sup>2</sup>Zhejiang University</span><span><sup>3</sup>Southeast University</span></p>
+        <nav class="links" aria-label="Paper resources">
+          <a class="btn primary" href="assets/neurips_2026.pdf">Paper</a>
+          <a class="btn" href="https://arxiv.org/abs/2605.08733">arXiv</a>
+          <a class="btn" href="https://github.com/skypitcher/soft_gac_jax">Code</a>
+          <a class="btn" href="#video">Video</a>
+          <a class="btn" href="assets/softgac_poster.pdf">Poster</a>
+          <a class="btn" href="#citation">BibTeX</a>
+        </nav>
+      </div>
+      <a class="scroll-cue" href="#overview" aria-label="Scroll to the overview"></a>
+    </header>
 
-      <section id="rollouts" class="rollouts page-width" aria-label="SoftGAC policy rollouts">
-        <div class="rollout-grid">
-          <figure><video autoplay muted loop playsinline controls preload="metadata" poster="assets/videos/humanoid-run-poster.jpg" aria-label="SoftGAC Humanoid Run rollout"><source src="assets/videos/humanoid-run.mp4" type="video/mp4"></video><figcaption>Humanoid Run</figcaption></figure>
-          <figure><video autoplay muted loop playsinline controls preload="metadata" poster="assets/videos/dog-run-poster.jpg" aria-label="SoftGAC Dog Run rollout"><source src="assets/videos/dog-run.mp4" type="video/mp4"></video><figcaption>Dog Run</figcaption></figure>
-          <figure><video autoplay muted loop playsinline controls preload="metadata" poster="assets/videos/h1-hurdle-poster.jpg" aria-label="SoftGAC H1 Hurdle rollout"><source src="assets/videos/h1-hurdle.mp4" type="video/mp4"></video><figcaption>H1 Hurdle</figcaption></figure>
-          <figure><video autoplay muted loop playsinline controls preload="metadata" poster="assets/videos/h1-run-poster.jpg" aria-label="SoftGAC H1 Run rollout"><source src="assets/videos/h1-run.mp4" type="video/mp4"></video><figcaption>H1 Run</figcaption></figure>
-        </div>
-      </section>
-
-      <section id="trilemma" class="section page-width">
-        <div class="section-lede">
-          <h2>The old bargain is too cramped.</h2>
-          <div class="lede-copy">
-          <p>Diffusion and flow-matching policies can represent rich, multimodal action distributions. Putting that expressiveness to work in soft RL faces two obstacles:</p>
-          <ul class="obstacles">
-            <li><strong>Softness.</strong> Actions are easy to sample, but their marginal densities are often hard to evaluate. Soft regularization therefore typically relies on entropy bounds, estimates, or proxies.</li>
-            <li><strong>Computation.</strong> Repeated network evaluations make sampling expensive; differentiating through them also raises training cost. One-step and few-step variants reduce sampling cost, but often sacrifice returns.</li>
-          </ul>
+    <main>
+      <!-- ================= OVERVIEW ================= -->
+      <section class="section" id="overview">
+        <div class="wrap">
+          <p class="eyebrow">In one sentence</p>
+          <p class="lead">SoftGAC is a <b>one-step generative actor</b> whose internal Gaussian <b>bridge</b> layers make the maximum-entropy regularizer an <b>exact, analytical path KL</b>. It needs no entropy estimates and no backpropagation through a long sampler, and it beats many-step diffusion and flow actors at a fraction of the inference cost.</p>
+          <div class="pillars">
+            <article class="pillar">
+              <p class="p-num">01</p>
+              <h3>Soft</h3>
+              <p>Principled MaxEnt: an analytical path-KL regularizer, <b>endpoint-equivalent to SAC</b>. No entropy estimates, no surrogates.</p>
+            </article>
+            <article class="pillar">
+              <p class="p-num">02</p>
+              <h3>Fast</h3>
+              <p><b>One network call</b> per action, with about the same parameters as the baselines: <b>≈1/6</b> the latency of many-step diffusion.</p>
+            </article>
+            <article class="pillar">
+              <p class="p-num">03</p>
+              <h3>Better</h3>
+              <p><b>+44% return</b> over the strongest many-step actor on 8 hard Humanoid, Dog and H1 tasks.</p>
+            </article>
           </div>
         </div>
       </section>
 
-      <section id="method" class="section page-width">
-        <div class="section-lede">
-          <h2>A soft objective for expressive implicit actors.</h2>
-          <div class="lede-copy">
-          <p>Start with noise. A sequence of lightweight stochastic layers—the <strong>bridge</strong>—transforms it into an action. Together, these Gaussian layers express rich action distributions and expose <strong>analytical local costs</strong> against a broad reference process. Learning steers the paths toward high-value actions while controlling these costs, without estimating action entropy.</p>
+      <!-- ================= VIDEO ================= -->
+      <section class="section video-section" id="video">
+        <div class="wrap">
+          <div class="sec-head">
+            <p class="eyebrow">Watch</p>
+            <h2>SoftGAC in 4 minutes</h2>
+            <p class="sub">A narrated walkthrough of the idea, the theory and the results. Subtitles are burned in.</p>
           </div>
-        </div>
-        <figure class="research-figure bridge-figure">
-          <div class="figure-viewport" tabindex="0" role="region" aria-label="Bridge overview; scroll horizontally on small screens">
-            <a href="assets/figures/softgac_bridge_overview.svg" target="_blank" rel="noopener" aria-label="Open bridge overview at full resolution">
-              <img src="assets/figures/softgac_bridge_overview.svg" alt="Actor paths move toward high-value action modes while reference paths remain broad. Local KL costs compare the actor and reference transitions along the sampled path." width="847" height="226" loading="lazy">
-            </a>
-          </div>
-          <figcaption><strong>Regularize the path, not just the endpoint.</strong> The critic scores the action; local KL costs shape how it is generated. Columns show internal bridge layers, not repeated network calls. <span class="figure-hint">Select to enlarge.</span></figcaption>
-        </figure>
-        <div class="method-note">
-          <p>The resulting path-space soft objective guides <strong>both actor and critic updates</strong>. With unrestricted path laws and a uniform reference action marginal, its optimum recovers SAC’s Boltzmann policy: the extra regularization shapes how actions are generated while preserving the ideal MaxEnt action distribution. <a href="assets/neurips_2026.pdf#page=4">The SAC connection →</a></p>
+          <figure class="video-frame">
+            <video controls preload="metadata" playsinline poster="assets/videos/softgac_overview_poster.jpg" aria-label="SoftGAC overview video">
+              <source src="assets/videos/softgac_overview_en.mp4" type="video/mp4">
+              <a href="assets/videos/softgac_overview_en.mp4">Download the overview video (MP4)</a>
+            </video>
+          </figure>
         </div>
       </section>
 
-      <section id="cost" class="section page-width">
-        <div class="cost-lede">
-          <h2>A <em>faster</em> actor could have been<br class="editorial-break"> <em class="better-word">stronger</em> all along.</h2>
-          <p>Within a <strong>comparable total actor parameter budget</strong>, SoftGAC replaces repeated calls to a shared sampler with lightweight, step-specific layers inside one network. Each action requires <strong>one network evaluation</strong>. The aim is lower training and deployment costs together with higher returns—not a larger model or a weaker policy.</p>
+      <!-- ================= WHY GENERATIVE ================= -->
+      <section class="section" id="why">
+        <div class="wrap">
+          <div class="sec-head">
+            <p class="eyebrow">Motivation</p>
+            <h2>Why generative policies?</h2>
+            <p class="sub">In many control tasks there is <b>more than one good action</b>. A robot facing an obstacle can go left or right, but not straight. A Gaussian policy has a single peak: to cover both sides, its mean lands in the middle, right into the obstacle. Diffusion and flow policies can model <b>multimodal, highly non-Gaussian</b> action distributions and keep both good options.</p>
+          </div>
+          <figure class="card why-figure">
+            <div class="why-controls" role="group" aria-label="Choose a policy to sample from">
+              <button type="button" class="seg" data-policy="gauss" aria-pressed="false">Gaussian policy</button>
+              <button type="button" class="seg" data-policy="multi" aria-pressed="true">Generative policy</button>
+              <button type="button" class="ghost" id="why-resample">Resample</button>
+              <span class="why-stat" id="why-stat" aria-live="polite"></span>
+            </div>
+            <svg id="why-svg" viewBox="0 0 1000 520" role="img" aria-label="A robot facing an obstacle, sampled trajectories from the chosen policy, and the action densities of a Gaussian and a multimodal policy"></svg>
+            <figcaption>Illustration, not an experiment. Steering <span class="m">a</span> ∈ [−1, 1]; |<span class="m">a</span>| &lt; 0.5 hits the obstacle. The collision rates are integrated from the plotted densities: Gaussian 𝒩(0, 0.5²) vs. the mixture ½𝒩(±0.72, 0.1²).</figcaption>
+          </figure>
         </div>
-        <figure class="computation-figure actor-animation-figure" id="actor-comparison">
-          <iframe class="actor-animation" src="assets/figures/actor-comparison-animated.svg?v=editorial-color"
-            title="Animated comparison: repeated shared-network evaluations versus one structured SoftGAC actor evaluation"
-            width="1040" height="414" loading="lazy" sandbox="allow-scripts" aria-describedby="actor-comparison-caption"></iframe>
-          <div class="animation-controls">
-            <span class="animation-note">Illustrative motion, not measured timing.</span>
-            <div class="animation-actions">
-              <button type="button" class="animation-button" data-animation-toggle disabled>Pause animation</button>
-              <button type="button" class="animation-button" data-animation-replay disabled>Replay</button>
-              <a href="assets/figures/actor-comparison-animated.svg" target="_blank" rel="noopener">Open SVG</a>
+      </section>
+
+      <!-- ================= TWO PROBLEMS ================= -->
+      <section class="section tint" id="problems">
+        <div class="wrap">
+          <div class="sec-head">
+            <p class="eyebrow">The challenge</p>
+            <h2>Expressive generative policies face two problems</h2>
+          </div>
+          <div class="problems">
+            <article class="card problem">
+              <div class="p-badge">1</div>
+              <h3>Cost vs. performance</h3>
+              <p>Many-step diffusion and flow policies are strong, but they call <b>the same network</b> (<span class="m">M</span> params) <span class="m">N</span> times for every action, and training backpropagates through all <span class="m">N</span> calls. One-step generators are fast and cheap, but their <b>returns usually drop</b>.</p>
+              <svg class="mini" viewBox="0 0 520 190" role="img" aria-label="A many-step actor reuses one network N times; a one-step generator calls it once">
+                <text x="0" y="22" class="ml">many-step</text>
+                <g class="mbox red"><rect x="0" y="34" width="62" height="44" rx="8"/><rect x="82" y="34" width="62" height="44" rx="8"/><rect x="164" y="34" width="62" height="44" rx="8"/><rect x="276" y="34" width="62" height="44" rx="8"/></g>
+                <g class="mtext"><text x="31" y="62">f<tspan dy="5" font-size="12">θ</tspan></text><text x="113" y="62">f<tspan dy="5" font-size="12">θ</tspan></text><text x="195" y="62">f<tspan dy="5" font-size="12">θ</tspan></text><text x="251" y="62">⋯</text><text x="307" y="62">f<tspan dy="5" font-size="12">θ</tspan></text></g>
+                <text x="360" y="62" class="mnote">× N calls</text>
+                <path d="M300,96 H20" class="bptt"/><text x="160" y="116" class="mbptt">∇Q through all N calls</text>
+                <text x="0" y="146" class="ml">one-step</text>
+                <rect x="0" y="154" width="338" height="34" rx="8" class="mbox dark"/>
+                <text x="169" y="176" class="mtext light">f<tspan dy="5" font-size="12">θ</tspan><tspan dy="-5"> · M params</tspan></text>
+                <text x="360" y="176" class="mnote">× 1 call · weaker</text>
+              </svg>
+            </article>
+            <article class="card problem">
+              <div class="p-badge">2</div>
+              <h3>Intractable entropy</h3>
+              <p>For <b>any implicit generator</b>, one step or many, the action is a transformed noise sample. Sampling is easy, but the density, and hence the entropy, cannot be computed:</p>
+              <div class="math-block">\[ \pi_\theta(a\mid s)=\int p(z)\,\delta\big(a-f_\theta(z,s)\big)\,dz \;\;\Rightarrow\;\; \mathcal H(\pi_\theta)=\,? \]</div>
+              <ul class="fixes">
+                <li><b>Approximate the entropy</b> <span class="tag">inexact</span><br><span class="eg">GMM fit (DACER) · Monte Carlo (MaxEntDP) · lower bound (DIME)</span></li>
+                <li><b>Replace it with a surrogate</b> <span class="tag">indirect</span><br><span class="eg">kinetic energy (FLAC) · Wasserstein distance (FlowRL)</span></li>
+              </ul>
+              <p class="neither">Neither guarantees the true MaxEnt policy (endpoint-equivalence).</p>
+            </article>
+          </div>
+          <p class="question">Can one policy be truly <b>soft</b>, <b>fast</b>, and <b>better</b>?</p>
+        </div>
+      </section>
+
+      <!-- ================= METHOD ================= -->
+      <section class="section" id="method">
+        <div class="wrap">
+          <div class="sec-head">
+            <p class="eyebrow">Method</p>
+            <h2>Open the box: a soft bridge</h2>
+            <p class="sub">SoftGAC is also a one-step generator: <b>about the same number of parameters</b>, and <b>one network call</b>. Inside, the parameter budget is split into <span class="m">K</span> small <b>Gaussian transition</b> layers (≈ <span class="m">M/K</span> params each), each used once. Each layer is paired with one step of a fixed maximum-entropy reference process that has no parameters.</p>
+          </div>
+          <figure class="card bridge-card">
+            <svg id="bridge-svg" viewBox="0 0 1000 400" role="img" aria-label="The soft bridge actor: K Gaussian transitions inside one network, each paired with a reference step; the local KL terms add up to the control energy"></svg>
+            <div class="budget" aria-label="Parameter budget comparison">
+              <div class="b-row"><span class="b-lab red">Many-step actor</span><span class="b-bar red-bar">one network · M params</span><span class="b-x">× N calls</span></div>
+              <div class="b-row"><span class="b-lab blue">SoftGAC actor</span><span class="b-segs"><i>M/K</i><i>M/K</i><i>M/K</i><i>M/K</i><i>M/K</i><i>M/K</i></span><span class="b-x">× 1 call</span></div>
+              <p class="b-note">Same total budget. Actor params, mean of the 3 domains in Fig. 3: SoftGAC 0.43M, DIME 0.44M.</p>
+            </div>
+          </figure>
+          <div class="eq-grid">
+            <div class="card eq-card">
+              <h4>Each layer is a Gaussian transition</h4>
+              <div class="math-block">\[ q_{\theta,k}(z_{k+1}\mid z_k,s)=\mathcal N\big(z_k+h\,u_{\theta,k}(s,z_k),\;2h\,\mathrm{diag}\,\sigma^2_{\theta,k}(s,z_k)\big) \]</div>
+              <p>Sampled, not a deterministic map. \(h=1/K\), and the base is \(z_0\sim q_{\text{ref}}\propto\prod_i\mathrm{sech}^2 z_i\), whose \(\tanh\) image is uniform.</p>
+              <h4>Reference step (maximum entropy, no parameters)</h4>
+              <div class="math-block">\[ r_k(z_{k+1}\mid z_k)=\mathcal N\big(z_k-2h\tanh z_k,\;2hI\big) \]</div>
+            </div>
+            <div class="card eq-card">
+              <h4>Closed-form KL of each layer (Eq. 24)</h4>
+              <div class="math-block">\[ \mathcal C_k(s,z_k)=\frac12\sum_{i=1}^{d_a}\Big[\sigma^2_{\theta,k,i}+\frac{(\mu_{\theta,k,i}-\mu_{R,k,i})^2}{2h}-1-\log\sigma^2_{\theta,k,i}\Big] \]</div>
+              <p class="small">with \(\mu_{\theta,k}=z_k+h\,u_{\theta,k}\) and \(\mu_{R,k}=z_k-2h\tanh z_k\).</p>
+              <h4>Control energy = exact path KL (Lemma 1)</h4>
+              <div class="math-block">\[ \mathcal C_\theta(s,\tau)=\sum_{k=0}^{K-1}\mathcal C_k(s,z_k),\qquad \mathbb E_{\tau\sim P_\theta}\big[\mathcal C_\theta\big]=D_{\mathrm{KL}}(P_\theta\,\|\,R) \]</div>
+              <p class="small">Computed in the same forward pass as the action. No density fitting, no entropy bound.</p>
             </div>
           </div>
-          <figcaption id="actor-comparison-caption"><strong>One network evaluation per action, at a comparable total actor budget.</strong> \(K=6\) is internal depth, not six evaluations of the full network. Reference transitions supply local training costs, not an extra deployment rollout.</figcaption>
-        </figure>
-        <div class="inference-comparison" id="inference">
-          <div class="inference-intro">
-          <h3 id="inference-title">Inference time at comparable actor budgets.</h3>
-          <p>SoftGAC stays close to FLAC and FlowRL in latency, and is about <strong>5–10× faster</strong> than DIME, QSM, and QVPO across the three domains below.</p>
-          </div>
-          <div class="inference-data">
-          <div class="inference-table-wrap" role="region" aria-labelledby="inference-title" tabindex="0">
-            <!-- Camera-ready Figure 3: time in microseconds; total actor parameters in thousands. -->
-            <table class="inference-table" aria-describedby="inference-note">
-              <caption>Latency (µs); total params in parentheses.</caption>
-              <thead>
-                <tr><th scope="col">Actor</th><th scope="col">DMC Humanoid</th><th scope="col">DMC Dog</th><th scope="col">HumanoidBench</th></tr>
-              </thead>
-              <tbody>
-                <tr class="our-actor"><th scope="row">SoftGAC</th><td>61 <span>(410K)</span></td><td>75 <span>(526K)</span></td><td>63 <span>(342K)</span></td></tr>
-                <tr><th scope="row">FLAC</th><td>55 <span>(322K)</span></td><td>61 <span>(419K)</span></td><td>55 <span>(311K)</span></td></tr>
-                <tr><th scope="row">DIME</th><td>385 <span>(423K)</span></td><td>393 <span>(471K)</span></td><td>387 <span>(418K)</span></td></tr>
-                <tr><th scope="row">FlowRL</th><td>55 <span>(322K)</span></td><td>61 <span>(419K)</span></td><td>55 <span>(311K)</span></td></tr>
-                <tr><th scope="row">QSM</th><td>614 <span>(183K)</span></td><td>712 <span>(188K)</span></td><td>604 <span>(184K)</span></td></tr>
-                <tr><th scope="row">QVPO</th><td>373 <span>(369K)</span></td><td>387 <span>(466K)</span></td><td>376 <span>(358K)</span></td></tr>
-                <tr><th scope="row">CrossQ-SAC</th><td>31 <span>(321K)</span></td><td>37 <span>(419K)</span></td><td>31 <span>(311K)</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p class="inference-swipe">Swipe to compare all three domains.</p>
-          <p class="inference-note" id="inference-note">Apple M3 Pro CPU; compilation excluded. SoftGAC uses its deterministic mean path at evaluation, bypassing variance heads and regularization costs. <a href="assets/neurips_2026.pdf#page=8">Paper, Fig. 3 →</a></p>
+          <div class="card train-card">
+            <h4>A drop-in soft actor-critic</h4>
+            <p>Endpoint entropy is replaced by the control energy, used directly in both updates:</p>
+            <div class="math-block">\[ y=r+\gamma(1-d)\Big[Q^{\min}_{\bar\phi}\big(s',\tanh z'_K\big)-\alpha\,\mathcal C_{\bar\theta}(s',\tau')\Big],\qquad \mathcal L_{\text{actor}}(\theta)=\mathbb E_{s,\,\tau\sim P_\theta}\Big[\alpha\,\mathcal C_\theta(s,\tau)-Q^{\min}_\phi\big(s,\tanh z_K\big)\Big] \]</div>
+            <p class="small">The temperature tracks a control budget \(\mathcal C_{\text{target}}=\rho_{\text{ctrl}}Kd_a\). At deployment, the actor follows its mean bridge path.</p>
           </div>
         </div>
       </section>
 
-      <section id="evidence" class="section page-width">
-        <div class="section-lede">
-          <h2>Not just faster.<br> <em>Stronger</em> where it matters.</h2>
-          <div class="lede-copy">
-          <p>Across <strong>12 control tasks</strong>, SoftGAC remains competitive on easier problems and achieves substantially higher returns on difficult locomotion and obstacle tasks. Comparisons use comparable total actor parameter budgets and the same main critic update.</p>
+      <!-- ================= THEORY ================= -->
+      <section class="section tint" id="theory">
+        <div class="wrap">
+          <div class="sec-head">
+            <p class="eyebrow">Theory</p>
+            <h2>Principled: MaxEnt RL in path space</h2>
+            <p class="sub">Instead of the intractable action entropy, regularize the <b>whole generation path</b> \(\tau=(z_0,\dots,z_K)\) against the reference process \(R\):</p>
+            <div class="math-block hero-eq">\[ \mathcal J_{\text{path}}=\mathbb E_{\tau\sim P_\theta}\big[Q(s,\tanh z_K)\big]-\alpha\,D_{\mathrm{KL}}\big(P_\theta(\cdot\mid s)\,\|\,R\big) \]</div>
           </div>
+          <div class="theory-grid">
+            <div class="card thm">
+              <p class="thm-h">Prop. 1 · The path KL contains SAC's regularizer</p>
+              <div class="math-block">\[ D_{\mathrm{KL}}(P_\theta\|R)=\underbrace{D_{\mathrm{KL}}(\pi_\theta\|u_R)}_{\text{endpoint KL (SAC)}}+\underbrace{\mathbb E_{a\sim\pi_\theta}\big[D_{\mathrm{KL}}(P_\theta(\cdot|a)\|R(\cdot|a))\big]}_{\text{how }a\text{ is generated}} \]</div>
+            </div>
+            <div class="card thm">
+              <p class="thm-h"><span class="case">Ideal</span> Thm. 1 · Unconstrained base</p>
+              <div class="math-block">\[ \frac{dP^\star_Q}{dR}(\tau\mid s)\propto e^{Q(s,\tanh z_K)/\alpha}\;\Longrightarrow\;\pi^\star_Q(a\mid s)\propto u_R(a)\,e^{Q(s,a)/\alpha} \]</div>
+              <p class="eqv"><span class="badge">Endpoint-equivalent</span> With uniform \(u_R\), \(\pi^\star_Q\) is exactly SAC's Boltzmann policy. The path term only shapes how each action is reached.</p>
+            </div>
+            <div class="card thm">
+              <p class="thm-h"><span class="case p">Practical</span> Thm. 2 &amp; Cor. 1 · Fixed base</p>
+              <p>A real actor fixes its base \(p_0\) (here \(q_{\text{ref}}\)), so only the transitions are tilted. The base adds a constant, and the gap is bounded:</p>
+              <div class="math-block">\[ D_{\mathrm{KL}}\big(\pi^\star_{Q,p_0}\,\|\,\pi^\star_Q\big)\le\Delta(s)/\alpha \]</div>
+            </div>
+            <div class="card thm">
+              <p class="thm-h">Prop. 2 · The actor loss is a reverse-KL projection</p>
+              <div class="math-block">\[ \mathcal L_{\text{actor}}(\theta\mid s)=\alpha\,D_{\mathrm{KL}}\big(P_\theta\,\|\,P^\star_Q\big)+\text{const} \]</div>
+              <p>Each update moves the bridge toward the ideal soft-optimal bridge.</p>
+            </div>
+          </div>
+          <figure class="card boltz-card">
+            <svg id="boltz-svg" viewBox="0 0 900 300" role="img" aria-label="At a fixed temperature, the critic tilts a uniform prior into the Boltzmann policy, keeping every good mode"></svg>
+            <div class="boltz-ctl">
+              <label for="tilt">Value tilt <span class="m">λ</span></label>
+              <input type="range" id="tilt" min="0" max="1" step="0.01" value="1">
+              <span id="tilt-text"></span>
+            </div>
+            <figcaption>\(\pi_\lambda\propto u_R\,e^{\lambda Q/\alpha}\) at a fixed \(\alpha\): \(\lambda=0\) is the uniform prior, \(\lambda=1\) is \(\pi^\star\). Illustrative 1-D critic.</figcaption>
+          </figure>
         </div>
-        <figure class="research-figure results-figure">
-          <div class="figure-viewport" tabindex="0" role="region" aria-label="All 12 task learning curves; scroll horizontally on small screens">
-            <a href="assets/figures/iqm_learning_curves_all12.svg" target="_blank" rel="noopener" aria-label="Open all 12 task learning curves at full resolution"><img src="assets/figures/iqm_learning_curves_all12.svg" alt="Learning curves for all twelve tasks comparing SoftGAC, FLAC, DIME, FlowRL, QSM, QVPO, and CrossQ-SAC. SoftGAC has particularly strong results on H1 Hurdle and H1 Stair." width="985" height="612" loading="lazy"></a>
-          </div>
-          <figcaption><strong>The full 12-task benchmark.</strong> Interquartile mean returns and 95% bootstrap confidence intervals across eight seeds. <span class="figure-hint">Select to enlarge.</span></figcaption>
-        </figure>
       </section>
 
-      <section id="paper" class="section citation-section page-width">
-        <div class="citation-heading"><h2>Citation</h2><button class="button copy-bibtex" type="button" data-copy-target="softgac-bibtex">Copy BibTeX</button></div>
-        <p class="citation-intro">For theory and full experiments, read the <a href="assets/neurips_2026.pdf">paper</a>. For implementation, explore the <a href="https://github.com/skypitcher/soft_gac_jax">JAX code</a>.</p>
-        <pre><code id="softgac-bibtex">@inproceedings{he2026generative,
+      <!-- ================= RESULTS ================= -->
+      <section class="section" id="results">
+        <div class="wrap">
+          <div class="sec-head">
+            <p class="eyebrow">Results</p>
+            <h2>Faster does not have to mean weaker</h2>
+            <p class="sub">DMC (Humanoid, Dog) and HumanoidBench (H1): 12 tasks, 8 seeds, interquartile mean (IQM) with 95% bootstrap CIs. All actors are re-implemented in one codebase with comparable actor parameter budgets and the same main critic.</p>
+          </div>
+          <div class="stat-row">
+            <div class="stat"><p class="sv">+44%</p><p class="sk">average return over the strongest many-step actor (DIME), with a comparable actor (0.43M vs. 0.44M params)</p></div>
+            <div class="stat"><p class="sv">≈1/6</p><p class="sk">of DIME's per-action inference latency (66 µs vs. 388 µs)</p></div>
+            <div class="stat"><p class="sv">+24%</p><p class="sk">average return over the best baseline overall (FLAC)</p></div>
+          </div>
+          <div class="results-grid">
+            <figure class="card chart-card">
+              <h3 class="chart-title">Compute–return trade-off</h3>
+              <div class="chart-wrap"><svg id="scatter" viewBox="0 0 640 420" role="img" aria-label="Average final IQM return versus per-action inference time for seven actors"></svg><div class="tip" id="scatter-tip" role="status"></div></div>
+              <figcaption>Mean final IQM over the 8 hard tasks vs. per-action latency (mean of 3 domains, Apple M3 Pro CPU). Upper-left is better. Hover a point for details.</figcaption>
+            </figure>
+            <figure class="card chart-card">
+              <h3 class="chart-title">Final IQM by task</h3>
+              <div class="task-tabs" id="task-tabs" role="tablist" aria-label="Choose a task"></div>
+              <div id="task-bars" class="task-bars"></div>
+              <figcaption>Final IQM (mean of the last four evaluations) from Fig. 9 of the paper.</figcaption>
+            </figure>
+          </div>
+          <figure class="card wide-fig">
+            <h3 class="chart-title">Learning curves on all 12 tasks</h3>
+            <a href="assets/figures/iqm_learning_curves_all12.svg" target="_blank" rel="noopener"><img src="assets/figures/iqm_learning_curves_all12.svg" alt="IQM learning curves on all 12 tasks for SoftGAC, FLAC, DIME, FlowRL, QSM, QVPO and CrossQ-SAC. SoftGAC is strongest on Humanoid Run, Dog Run, H1 Hurdle, H1 Stair and H1 Run." loading="lazy" width="985" height="612"></a>
+            <figcaption>The largest gains are on high-dimensional, long-horizon locomotion. On easier tasks several methods saturate. Select to enlarge.</figcaption>
+          </figure>
+          <div class="results-grid">
+            <div class="card">
+              <h3 class="chart-title">Inference latency and actor size</h3>
+              <div class="table-wrap" tabindex="0" role="region" aria-label="Latency table">
+                <table class="data">
+                  <caption>Per-action latency (µs), actor params in parentheses (Fig. 3).</caption>
+                  <thead><tr><th scope="col">Actor</th><th scope="col">DMC Humanoid</th><th scope="col">DMC Dog</th><th scope="col">HumanoidBench</th></tr></thead>
+                  <tbody>
+                    <tr class="us"><th scope="row">SoftGAC</th><td>61 <span>(410K)</span></td><td>75 <span>(526K)</span></td><td>63 <span>(342K)</span></td></tr>
+                    <tr><th scope="row">FLAC</th><td>55 <span>(322K)</span></td><td>61 <span>(419K)</span></td><td>55 <span>(311K)</span></td></tr>
+                    <tr><th scope="row">DIME</th><td>385 <span>(423K)</span></td><td>393 <span>(471K)</span></td><td>387 <span>(418K)</span></td></tr>
+                    <tr><th scope="row">FlowRL</th><td>55 <span>(322K)</span></td><td>61 <span>(419K)</span></td><td>55 <span>(311K)</span></td></tr>
+                    <tr><th scope="row">QSM</th><td>183 <span>(614K)</span></td><td>188 <span>(712K)</span></td><td>184 <span>(604K)</span></td></tr>
+                    <tr><th scope="row">QVPO</th><td>373 <span>(369K)</span></td><td>387 <span>(466K)</span></td><td>376 <span>(358K)</span></td></tr>
+                    <tr><th scope="row">CrossQ-SAC</th><td>31 <span>(321K)</span></td><td>37 <span>(419K)</span></td><td>31 <span>(311K)</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="small muted">Apple M3 Pro CPU, one action at a time, compilation excluded. SoftGAC evaluates its deterministic mean path.</p>
+            </div>
+            <div class="card">
+              <h3 class="chart-title">vs. 20-step diffusion actors · H1 Hurdle (3M)</h3>
+              <div class="table-wrap" tabindex="0" role="region" aria-label="Comparison with diffusion actors">
+                <table class="data">
+                  <caption>Tables 7 and 10 of the paper.</caption>
+                  <thead><tr><th scope="col">Actor</th><th scope="col">NFE</th><th scope="col">Params</th><th scope="col">IQM</th><th scope="col">Latency</th><th scope="col">Train</th></tr></thead>
+                  <tbody>
+                    <tr class="us"><th scope="row">SoftGAC</th><td>1</td><td>0.34M</td><td>737</td><td>63 µs</td><td>6.0 h</td></tr>
+                    <tr><th scope="row">DACER</th><td>20</td><td>0.32M</td><td>377</td><td>400 µs</td><td>7.6 h</td></tr>
+                    <tr><th scope="row">SDAC</th><td>20</td><td>0.32M</td><td>60</td><td>410 µs</td><td>9.3 h</td></tr>
+                    <tr><th scope="row">MaxEntDP</th><td>20</td><td>0.40M</td><td>18</td><td>509 µs</td><td>24.9 h</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="small muted">Training: one TPU core per seed, median wall-clock at 3M steps.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= DEMOS ================= -->
+      <section class="section dark" id="demos">
+        <div class="wrap">
+          <div class="sec-head">
+            <p class="eyebrow">Rollouts</p>
+            <h2>Trained policies in action</h2>
+            <p class="sub">Every action comes from <b>one network call</b>: 61–75 µs per action on a laptop CPU.</p>
+          </div>
+          <div class="demo-grid">
+            <figure class="demo"><video autoplay muted loop playsinline preload="metadata" poster="assets/videos/humanoid-run-poster.jpg" aria-label="SoftGAC Humanoid Run rollout"><source src="assets/videos/humanoid-run.mp4" type="video/mp4"></video><figcaption><b>Humanoid Run</b><span>21-D actions · IQM 701</span></figcaption></figure>
+            <figure class="demo"><video autoplay muted loop playsinline preload="metadata" poster="assets/videos/dog-run-poster.jpg" aria-label="SoftGAC Dog Run rollout"><source src="assets/videos/dog-run.mp4" type="video/mp4"></video><figcaption><b>Dog Run</b><span>38-D actions · IQM 755</span></figcaption></figure>
+            <figure class="demo"><video autoplay muted loop playsinline preload="metadata" poster="assets/videos/h1-hurdle-poster.jpg" aria-label="SoftGAC H1 Hurdle rollout"><source src="assets/videos/h1-hurdle.mp4" type="video/mp4"></video><figcaption><b>H1 Hurdle</b><span>19-D actions · IQM 737</span></figcaption></figure>
+            <figure class="demo"><video autoplay muted loop playsinline preload="metadata" poster="assets/videos/h1-run-poster.jpg" aria-label="SoftGAC H1 Run rollout"><source src="assets/videos/h1-run.mp4" type="video/mp4"></video><figcaption><b>H1 Run</b><span>19-D actions · IQM 824</span></figcaption></figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= WHY IT WORKS ================= -->
+      <section class="section" id="ablations">
+        <div class="wrap">
+          <div class="sec-head">
+            <p class="eyebrow">Analysis</p>
+            <h2>What makes it work</h2>
+          </div>
+          <figure class="card wide-fig">
+            <h3 class="chart-title">The soft path term matters</h3>
+            <img src="assets/figures/soft_regularizer_ablation_curves.svg" alt="Learning curves of SoftGAC with and without the soft regularizer (alpha = 0) on Humanoid Run, Humanoid Walk, Dog Run and H1 Hurdle. Removing the regularizer consistently hurts." loading="lazy" width="1055" height="259">
+            <figcaption>Same actor and critic with \(\alpha=0\): removing the control energy consistently hurts.</figcaption>
+          </figure>
+          <div class="results-grid three">
+            <div class="card">
+              <h3 class="chart-title">Analytical KL vs. estimated entropy</h3>
+              <div class="hbars">
+                <div class="hb"><span>Path KL (ours)</span><i style="--w:100%" class="blue"></i><b>729</b></div>
+                <div class="hb"><span>GMM entropy</span><i style="--w:47.9%"></i><b>349</b></div>
+              </div>
+              <p class="small muted">Same actor with DACER's GMM endpoint-entropy estimator. Average IQM over Dog Run, H1 Hurdle, H1 Run and H1 Stair (Table 6).</p>
+            </div>
+            <div class="card">
+              <h3 class="chart-title">vs. a one-step flow with exact density</h3>
+              <div class="hbars">
+                <div class="hb"><span>SoftGAC</span><i style="--w:100%" class="blue"></i><b>724</b></div>
+                <div class="hb"><span>Normalizing flow</span><i style="--w:66%"></i><b>478</b></div>
+                <div class="hb"><span>DACER (20 NFE)</span><i style="--w:59.7%" class="red"></i><b>432</b></div>
+              </div>
+              <p class="small muted">Average IQM over 5 hard tasks (Table 8). The bridge needs neither invertible layers nor Jacobians.</p>
+            </div>
+            <div class="card">
+              <h3 class="chart-title">Genuinely multimodal</h3>
+              <p class="big-num">53.8%</p>
+              <p class="small muted">of H1 Hurdle states have multimodal SoftGAC actions (Hartigan's Dip test), vs. 0.0% for CrossQ-SAC (Table 5). Robust to the base, the bridge depth (<span class="m">K</span> = 4–8) and the critic backend (XQC).</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= CITATION ================= -->
+      <section class="section tint" id="citation">
+        <div class="wrap">
+          <div class="cite-head">
+            <h2>Citation</h2>
+            <button class="btn small" type="button" id="copy-bibtex">Copy BibTeX</button>
+          </div>
+          <pre class="bibtex"><code id="bibtex">@inproceedings{he2026generative,
   title     = {Generative Actor-Critic with Soft Bridge Policies},
   author    = {He, Ke and He, Le and Tang, Shunpu and Wang, Yafei and Fan, Lisheng},
   booktitle = {Advances in Neural Information Processing Systems ({NeurIPS})},
   year      = {2026},
   url       = {https://arxiv.org/abs/2605.08733}
 }</code></pre>
-        <span id="copy-status" class="sr-only" role="status" aria-live="polite"></span>
+          <span id="copy-status" class="sr-only" role="status" aria-live="polite"></span>
+        </div>
       </section>
     </main>
-    <footer class="footer page-width"><p>SoftGAC · NeurIPS 2026</p><p>Expressive, soft, cheap, and better.</p></footer>
-    <script src="script.js?v=20261014-editorial"></script>
+
+    <footer class="footer">
+      <div class="wrap foot">
+        <p><b>SoftGAC</b> · NeurIPS 2026 · <span class="t-soft">One step</span> outside, a <span class="t-bridge">soft bridge</span> inside.</p>
+        <p>Questions? <a href="mailto:ke.he@gzhu.edu.cn">ke.he@gzhu.edu.cn</a> · <a href="https://github.com/skypitcher/soft_gac_jax">Code</a> · <a href="https://arxiv.org/abs/2605.08733">arXiv</a></p>
+      </div>
+    </footer>
+
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+    <script defer src="script.js?v=20261028d"></script>
   </body>
 </html>
