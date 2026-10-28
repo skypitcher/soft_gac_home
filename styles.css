@@ -197,8 +197,11 @@ figcaption { font-size: 14px; color: var(--muted); margin-top: 10px; line-height
 .task-bars { display: grid; gap: 7px; }
 .tb { display: grid; grid-template-columns: 96px 1fr 52px; align-items: center; gap: 10px; font-size: 14px; }
 .tb .tn { font-weight: 700; color: var(--ink-2); text-align: right; }
-.tb .track { height: 20px; background: #f1efe9; border-radius: 0 6px 6px 0; overflow: hidden; }
-.tb .fill { height: 100%; border-radius: 0 6px 6px 0; transition: width 0.5s ease; }
+.tb .track { display: block; height: 20px; background: #f1efe9; border-radius: 0 6px 6px 0; overflow: hidden; }
+.tb .fill { display: block; width: 0; height: 100%; border-radius: 0 6px 6px 0; transition: width 0.5s ease; }
+.tb-axis { display: grid; grid-template-columns: 96px 1fr 52px; gap: 10px; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.tb-axis i { font-style: normal; font-variant-numeric: tabular-nums; }
+.tb-axis span:nth-child(2) { display: flex; justify-content: space-between; border-top: 1px solid var(--rule); padding-top: 3px; }
 .tb .tv { font-weight: 800; font-variant-numeric: tabular-nums; }
 .tb.us .tn, .tb.us .tv { color: var(--blue); }
 .wide-fig { margin: 0 0 22px; }
@@ -258,7 +261,7 @@ table.data tr.us td span { color: var(--blue); }
   .b-lab { text-align: left; }
   .b-note { margin-left: 0 !important; }
   .why-stat { margin-left: 0; width: 100%; }
-  .tb { grid-template-columns: 84px 1fr 44px; }
+  .tb, .tb-axis { grid-template-columns: 84px 1fr 44px; }
   .hb { grid-template-columns: 108px 1fr 40px; }
   #tilt-text { min-width: 0; }
   .math-block { font-size: 0.82em; }

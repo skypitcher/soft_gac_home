@@ -385,11 +385,14 @@
     if (!tabs) return;
     const opts = ["Average", ...TASKS];
     tabs.innerHTML = opts.map((t, i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-i="${i - 1}">${t}</button>`).join("");
-    bars.innerHTML = METHODS.map(d => `<div class="tb${d.us ? " us" : ""}"><span class="tn">${d.m}</span><span class="track"><span class="fill" style="background:${d.c}"></span></span><span class="tv"></span></div>`).join("");
+    bars.innerHTML = METHODS.map(d => `<div class="tb${d.us ? " us" : ""}"><span class="tn">${d.m}</span><span class="track"><span class="fill" style="background:${d.c}"></span></span><span class="tv"></span></div>`).join("") +
+      `<div class="tb-axis" aria-hidden="true"><span></span><span><i>0</i><i id="tb-max"></i></span><span></span></div>`;
     const rows = [...bars.querySelectorAll(".tb")];
     function show(i) {
-      const vals = METHODS.map(d => (i < 0 ? mean(d.iqm) : d.iqm[i])), top = Math.max(...vals);
-      rows.forEach((r, k) => { r.querySelector(".fill").style.width = (100 * vals[k] / top) + "%"; r.querySelector(".tv").textContent = fmt(vals[k]); });
+      // one shared axis from 0, rounded up to the next 100, so bar length is proportional to the value
+      const vals = METHODS.map(d => (i < 0 ? mean(d.iqm) : d.iqm[i])), axis = Math.ceil(Math.max(...vals) / 100) * 100;
+      rows.forEach((r, k) => { r.querySelector(".fill").style.width = (100 * vals[k] / axis) + "%"; r.querySelector(".tv").textContent = fmt(vals[k]); });
+      bars.querySelector("#tb-max").textContent = axis;
     }
     tabs.addEventListener("click", e => {
       const b = e.target.closest("button"); if (!b) return;
